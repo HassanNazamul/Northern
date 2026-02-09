@@ -1,0 +1,7 @@
+{
+  "name": "Northern Path AI",
+  "description": "A world-class Canadian Travel Architect that generates hyper-specific, logistically sound itineraries across Canada, featuring real-time optimization and weather-adaptive planning.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
