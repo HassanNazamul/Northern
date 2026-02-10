@@ -89,8 +89,3 @@ export const useZoomPan = () => {
         resetView,
     };
 };
-User uploaded media 1
-User uploaded media 2
-In the first Screenshot, The cards in the canvas is going offScreen and the in the second Screen shot it is going behind the sidebar, it should not beUser uploaded media 1
-User uploaded media 2
-In the first Screenshot, The cards in the canvas is going offScreen and the in the second Screen shot it is going behind the sidebar, it should not be
