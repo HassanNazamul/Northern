@@ -41,6 +41,10 @@ export const useDragAndDrop = () => {
         return null;
     };
 
+    // -- Drag Context Handlers --
+
+    // Called when a drag operation starts
+    // Captures the item being dragged and stores it in Redux state
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
         const type = active.data.current?.type;
@@ -53,19 +57,24 @@ export const useDragAndDrop = () => {
         }));
     };
 
+    // Called continuously while dragging over other items
+    // Only used for visual updates by DndKit, no state changes here
     const handleDragOver = (event: DragOverEvent) => {
         // handleDragOver is for visual feedback only
         // Actual moves happen in handleDragEnd for smooth experience
     };
 
+    // Called when the user drops the item
+    // Calculates the new position and dispatches the appropriate Redux action
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
+        // If not dropped on a valid target, cancel the operation
         if (!over || !activeDragType || !itinerary) {
             dispatch(dragCancel());
             return;
         }
 
-        // Handle activity reordering within day
+        // -- Activity Reordering Logic --
         if (activeDragType === DRAG_TYPES.ACTIVITY) {
             const sourceDayId = findDayId(active.id);
             if (!sourceDayId) {

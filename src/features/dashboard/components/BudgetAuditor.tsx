@@ -24,7 +24,8 @@ export const BudgetAuditor: React.FC<BudgetAuditorProps> = ({ totalCost, budget 
                     isExpanded ? "rounded-xl p-4 w-72" : "rounded-full p-1 w-32 hover:w-40"
                 )}
             >
-                {/* Collapsed View (Progress Bar Only) */}
+                {/* -- Progress Bar -- */}
+                {/* Visualizes the percentage of budget used. Changes color if over budget. */}
                 <div className={cn("flex flex-col gap-2", !isExpanded && "justify-center h-2")}>
                     <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                         <div

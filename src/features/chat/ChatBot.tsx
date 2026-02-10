@@ -13,12 +13,16 @@ const ChatBot: React.FC<ChatBotProps> = ({ itineraryContext }) => {
     const [loading, setLoading] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
 
+    // -- Auto-Scroll --
+    // Scrolls to the bottom of the chat whenever new messages are added.
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
     }, [messages]);
 
+    // -- Message Handler --
+    // Sends user input to the AI service and updates the chat history.
     const handleSend = async () => {
         if (!input.trim()) return;
         const userMsg = input;

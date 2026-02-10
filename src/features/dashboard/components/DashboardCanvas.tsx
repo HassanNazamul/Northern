@@ -17,6 +17,8 @@ interface DashboardCanvasProps {
     onSelectActivity: (activity: Activity) => void;
     onSelectAccommodation: (accommodation: Accommodation) => void;
     onAutoSuggestAccommodation: (dayId: string) => void;
+    onManualAccommodation: (dayId: string) => void;
+    onAddActivity: (dayId: string) => void;
     activeDragType: string | null;
 }
 
@@ -33,6 +35,8 @@ export const DashboardCanvas: React.FC<DashboardCanvasProps> = ({
     onSelectActivity,
     onSelectAccommodation,
     onAutoSuggestAccommodation,
+    onManualAccommodation,
+    onAddActivity,
     activeDragType,
 }) => {
     return (
@@ -44,6 +48,8 @@ export const DashboardCanvas: React.FC<DashboardCanvasProps> = ({
             onMouseMove={onMouseMove}
             onMouseUp={onMouseUp}
         >
+            {/* -- Canvas Transformer -- */}
+            {/* Applies Zoom (scale) and Pan (translate) to the inner content container */}
             <div
                 className="w-full h-full transition-transform duration-75 ease-out origin-top-left"
                 style={{
@@ -63,6 +69,8 @@ export const DashboardCanvas: React.FC<DashboardCanvasProps> = ({
                                 onSelectActivity={onSelectActivity}
                                 onSelectAccommodation={onSelectAccommodation}
                                 onAutoSuggestAccommodation={onAutoSuggestAccommodation}
+                                onManualAccommodation={onManualAccommodation}
+                                onAddActivity={onAddActivity}
                                 activeDragType={activeDragType}
                             />
                         ))}

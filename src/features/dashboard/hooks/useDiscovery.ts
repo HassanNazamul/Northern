@@ -10,6 +10,9 @@ export const useDiscovery = (tripState: TripState) => {
     const discoveryItems = useAppSelector(selectDiscoveryItems);
     const discoveryLoading = useAppSelector(selectDiscoveryLoading);
 
+    // -- Discovery Logic --
+    // Fetches suggestions based on the current active tab and trip settings.
+    // Automatically re-fetches when tab or trip state changes.
     useEffect(() => {
         const { destination, vibe, budget } = tripState;
         dispatch(fetchDiscoveryItems({

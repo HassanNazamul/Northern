@@ -24,6 +24,9 @@ export const generateInitialItinerary = async (trip: TripState): Promise<Itinera
     const diffInMs = new Date(trip.endDate).getTime() - new Date(trip.startDate).getTime();
     const totalDays = Math.max(1, Math.ceil(diffInMs / (1000 * 60 * 60 * 24)) + 1);
 
+    // -- AI Prompt Construction --
+    // Builds a structured prompt to enforce JSON output adhering to our schema.
+    // Specifying "Canadian locations only" and "realistic travel times" improves result quality.
     const prompt = `
     Create a hyper-specific, logistically sound Canadian travel itinerary in JSON format.
     Destination: ${trip.destination}

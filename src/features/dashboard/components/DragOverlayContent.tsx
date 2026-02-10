@@ -16,6 +16,8 @@ export const DragOverlayContent: React.FC<DragOverlayContentProps> = ({
     activeDragItem,
     zoom
 }) => {
+    // -- Drop Animation --
+    // Configures the visual effect when an item is dropped (e.g., fading out).
     const dropAnimationConfig = {
         sideEffects: defaultDropAnimationSideEffects({
             styles: {

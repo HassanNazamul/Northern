@@ -3,11 +3,14 @@ import { ItineraryResponse, DayPlan, Activity, Accommodation, TripState } from '
 import { recalculateDayTimeline } from '@features/dashboard/utils';
 
 interface DashboardState {
-    // Data State
+    // -- Data State --
+    // Stores the full itinerary API response (days, activities)
     itinerary: ItineraryResponse | null;
+    // Stores trip settings like budget, destination, and travelers
     tripState: TripState | null;
 
-    // Drag State
+    // -- Drag State --
+    // Tracks the currently dragged item for DnD operations
     dragState: {
         activeId: string | null;
         activeDragType: string | null;
@@ -66,7 +69,8 @@ const dashboardSlice = createSlice({
             state.dragState.activeDragItem = null;
         },
 
-        // Activity Management
+        // -- Activity Management --
+        // Adds a new activity to a specific day, recalculating the timeline
         addActivity: (state, action: PayloadAction<{ dayId: string; activity: Activity; insertionIndex?: number }>) => {
             if (!state.itinerary) return;
 
@@ -131,6 +135,18 @@ const dashboardSlice = createSlice({
             state.dragState = initialState.dragState;
         },
 
+        removeActivity: (state, action: PayloadAction<{ dayId: string; activityId: string }>) => {
+            if (!state.itinerary) return;
+
+            const dayIndex = state.itinerary.itinerary.findIndex(d => d.id === action.payload.dayId);
+            if (dayIndex === -1) return;
+
+            const activities = state.itinerary.itinerary[dayIndex].activities;
+            const newActivities = activities.filter(a => a.id !== action.payload.activityId);
+
+            state.itinerary.itinerary[dayIndex].activities = recalculateDayTimeline(newActivities);
+        },
+
         reorderDays: (state, action: PayloadAction<{ oldIndex: number; newIndex: number }>) => {
             if (!state.itinerary) return;
 
@@ -142,12 +158,26 @@ const dashboardSlice = createSlice({
             state.dragState = initialState.dragState;
         },
 
-        setAccommodation: (state, action: PayloadAction<{ dayId: string; accommodation: Accommodation }>) => {
+        setAccommodation: (state, action: PayloadAction<{ dayId: string; accommodation: Accommodation | null }>) => {
             if (!state.itinerary) return;
 
             const dayIndex = state.itinerary.itinerary.findIndex(d => d.id === action.payload.dayId);
             if (dayIndex !== -1) {
-                state.itinerary.itinerary[dayIndex].accommodation = action.payload.accommodation;
+                // If null, we're removing it. Typescript might complain if DayPlan.accommodation is strictly Accommodation | undefined
+                // But usually optional properties allow undefined. We'll set it to undefined if null is passed.
+                if (action.payload.accommodation === null) {
+                    delete state.itinerary.itinerary[dayIndex].accommodation;
+                } else {
+                    state.itinerary.itinerary[dayIndex].accommodation = action.payload.accommodation;
+                }
+            }
+        },
+
+        removeAccommodation: (state, action: PayloadAction<{ dayId: string }>) => {
+            if (!state.itinerary) return;
+            const dayIndex = state.itinerary.itinerary.findIndex(d => d.id === action.payload.dayId);
+            if (dayIndex !== -1) {
+                delete state.itinerary.itinerary[dayIndex].accommodation;
             }
         },
 
@@ -177,10 +207,12 @@ export const {
     dragStart,
     dragCancel,
     addActivity,
+    removeActivity,
     reorderActivitiesWithinDay,
     moveActivityBetweenDays,
     reorderDays,
     setAccommodation,
+    removeAccommodation,
     toggleSidebar,
     setSidebarOpen,
     selectActivity,

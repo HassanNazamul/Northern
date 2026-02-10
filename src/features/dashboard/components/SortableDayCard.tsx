@@ -10,10 +10,14 @@ interface SortableDayCardProps {
     onSelectActivity: (activity: Activity) => void;
     onSelectAccommodation: (accommodation: Accommodation) => void;
     onAutoSuggestAccommodation: (dayId: string) => void;
+    onManualAccommodation?: (dayId: string) => void;
+    onAddActivity?: (dayId: string) => void;
     activeDragType: string | null;
 }
 
 export const SortableDayCard: React.FC<SortableDayCardProps> = (props) => {
+    // -- Sortable Hook --
+    // Provides drag attributes and transform styles for dnd-kit
     const {
         attributes,
         listeners,
@@ -31,7 +35,7 @@ export const SortableDayCard: React.FC<SortableDayCardProps> = (props) => {
 
     return (
         <div ref={setNodeRef} style={style} className="relative group h-full">
-            <DayCard {...props} dragHandleProps={{ attributes, listeners }} />
+            <DayCard {...props} onAddActivity={props.onAddActivity} dragHandleProps={{ attributes, listeners }} />
         </div>
     );
 };

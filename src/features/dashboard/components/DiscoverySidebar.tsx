@@ -47,6 +47,7 @@ export const DiscoverySidebar: React.FC<DiscoverySidebarProps> = ({
                 </div>
             </div>
 
+            {/* -- Tabs Navigation -- */}
             <div className="flex p-2 bg-slate-50 gap-1 border-b border-slate-100">
                 {tabs.map((tab) => (
                     <button
@@ -62,6 +63,8 @@ export const DiscoverySidebar: React.FC<DiscoverySidebarProps> = ({
                 ))}
             </div>
 
+            {/* -- Draggable Items List -- */}
+            {/* Renders a list of items that can be dragged onto the canvas */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50/30">
                 {isLoading ? (
                     <div className="flex flex-col items-center justify-center h-full text-slate-400 gap-2">

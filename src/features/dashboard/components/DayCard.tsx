@@ -12,6 +12,8 @@ interface DayCardProps {
     onSelectActivity: (activity: Activity) => void;
     onSelectAccommodation: (accommodation: Accommodation) => void;
     onAutoSuggestAccommodation: (dayId: string) => void;
+    onManualAccommodation?: (dayId: string) => void;
+    onAddActivity?: (dayId: string) => void;
     activeDragType: string | null;
     dragHandleProps?: {
         attributes: any;
@@ -24,14 +26,19 @@ export const DayCard: React.FC<DayCardProps> = ({
     onSelectActivity,
     onSelectAccommodation,
     onAutoSuggestAccommodation,
+    onManualAccommodation,
+    onAddActivity,
     activeDragType,
     dragHandleProps
 }) => {
+    // -- Droppable Zones --
+    // 1. Hotel Zone: Dropping an accommodation here updates the day's stay
     const { setNodeRef: setHotelRef, isOver: isHotelOver } = useDroppable({
         id: `hotel-zone-${dayPlan.id}`,
         data: { type: 'HOTEL_ZONE', dayId: dayPlan.id }
     });
 
+    // 2. Activity List Zone: Dropping an activity here adds it to the day's itinerary
     const { setNodeRef: setListRef, isOver: isListOver } = useDroppable({
         id: `activity-list-${dayPlan.id}`,
         data: { type: 'ACTIVITY_LIST', dayId: dayPlan.id }
@@ -93,7 +100,14 @@ export const DayCard: React.FC<DayCardProps> = ({
                             className="flex-1 border-2 border-dashed border-slate-200 rounded-xl p-3 flex flex-col items-center justify-center text-slate-400 hover:border-blue-400 hover:text-blue-500 hover:bg-white transition-all gap-1"
                         >
                             <Sparkles className="w-4 h-4" />
-                            <span className="text-[10px] font-bold uppercase">Auto-Find Stay</span>
+                            <span className="text-[10px] font-bold uppercase">Auto-Find</span>
+                        </button>
+                        <button
+                            onClick={() => onManualAccommodation && onManualAccommodation(dayPlan.id)}
+                            className="flex-1 border-2 border-dashed border-slate-200 rounded-xl p-3 flex flex-col items-center justify-center text-slate-400 hover:border-emerald-400 hover:text-emerald-500 hover:bg-white transition-all gap-1"
+                        >
+                            <GripVertical className="w-4 h-4 rotate-90" />
+                            <span className="text-[10px] font-bold uppercase">Fill Manual</span>
                         </button>
                     </div>
                 )}

@@ -10,3 +10,5 @@ export { BudgetAuditor } from './BudgetAuditor.tsx';
 export { ZoomControls } from './ZoomControls.tsx';
 export { ActivityDetailContent } from './ActivityDetailContent.tsx';
 export { AccommodationDetailContent } from './AccommodationDetailContent.tsx';
+export { AccommodationFormModal } from './AccommodationFormModal';
+export { ActivityFormModal } from './ActivityFormModal';

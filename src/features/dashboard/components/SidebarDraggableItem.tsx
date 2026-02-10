@@ -10,6 +10,9 @@ interface SidebarDraggableItemProps {
 }
 
 export const SidebarDraggableItem: React.FC<SidebarDraggableItemProps> = ({ item, type }) => {
+    // -- Draggable Logic --
+    // Makes this item draggable within the DndContext. 
+    // Data payload includes the item details for the drop handler.
     const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
         id: `sidebar-${type}-${item.id || item.hotelName}`,
         data: {

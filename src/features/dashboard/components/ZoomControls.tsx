@@ -10,6 +10,9 @@ interface ZoomControlsProps {
 }
 
 export const ZoomControls: React.FC<ZoomControlsProps> = ({ onZoomIn, onZoomOut, onReset, className, style }) => {
+    // -- Zoom Controls UI --
+    // Floating controls for canvas manipulation.
+    // Uses absolute positioning to stay on top of the canvas.
     return (
         <div className={className || "absolute bottom-6 left-6 z-[100] flex flex-col gap-2"} style={style}>
             <div className="bg-white/90 backdrop-blur p-2 rounded-2xl shadow-xl border border-slate-200/50 flex flex-col gap-2 items-center">

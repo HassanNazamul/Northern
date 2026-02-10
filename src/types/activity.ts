@@ -9,4 +9,5 @@ export interface Activity {
     durationMinutes?: number;
     coordinates?: { lat: number; lng: number };
     travelTimeFromPrev?: number;
+    imageUrl?: string;
 }

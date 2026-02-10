@@ -11,6 +11,8 @@ interface SortableActivityItemProps {
 }
 
 export const SortableActivityItem: React.FC<SortableActivityItemProps> = ({ activity, onClick }) => {
+    // -- Sortable Logic --
+    // Hooks into dnd-kit's sorting system to allow reordering within the list.
     const {
         attributes,
         listeners,

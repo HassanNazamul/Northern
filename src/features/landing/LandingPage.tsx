@@ -8,6 +8,8 @@ interface LandingPageProps {
 }
 
 const LandingPage: React.FC<LandingPageProps> = ({ onGenerate, loading }) => {
+    // -- Trip Inputs --
+    // State for capturing user preferences to generate the itinerary.
     const [destination, setDestination] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
@@ -16,6 +18,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGenerate, loading }) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        // Validation: Ensure required fields are present
         if (!destination || !startDate || !endDate) return;
         onGenerate({ destination, startDate, endDate, vibe, budget });
     };

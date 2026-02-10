@@ -6,6 +6,7 @@ interface BudgetMeterProps {
 }
 
 const BudgetMeter: React.FC<BudgetMeterProps> = ({ current, total }) => {
+    // Calculate percentage, capped at 100 for the bar width (visual only)
     const percentage = Math.min(100, (current / total) * 100);
     const isOver = current > total;
 

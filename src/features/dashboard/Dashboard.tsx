@@ -6,7 +6,7 @@ import { ChatBot } from '@features/chat';
 import { getAccommodationSuggestion } from '@services';
 import { useDragAndDrop, useZoomPan, useDiscovery } from './hooks';
 import { useAppSelector, useAppDispatch, selectItinerary, selectTripState, selectSidebarOpen, selectSelectedActivity, selectSelectedAccommodation } from '@state';
-import { setSidebarOpen, selectActivity, selectAccommodation, setAccommodation as setAccommodationAction } from '@state/slices/dashboardSlice';
+import { setSidebarOpen, selectActivity, selectAccommodation, removeAccommodation, removeActivity, addActivity, setAccommodation as setAccommodationAction } from '@state/slices/dashboardSlice';
 import {
   DiscoverySidebar,
   DashboardCanvas,
@@ -16,6 +16,8 @@ import {
   ActivityDetailContent,
   AccommodationDetailContent,
   DragOverlayContent,
+  AccommodationFormModal,
+  ActivityFormModal,
 } from './components';
 
 interface DashboardProps {
@@ -23,7 +25,8 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
-  // Redux State
+  // -- Redux State Selectors --
+  // Access global state for itinerary data and UI settings
   const dispatch = useAppDispatch();
   const itinerary = useAppSelector(selectItinerary);
   const tripState = useAppSelector(selectTripState);
@@ -71,7 +74,34 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
     handleTabChange,
   } = useDiscovery(tripState);
 
+  const [manualAccommodationDayId, setManualAccommodationDayId] = React.useState<string | null>(null);
+  const [manualActivityDayId, setManualActivityDayId] = React.useState<string | null>(null);
+
   // Handlers
+  const handleRemoveAccommodation = (dayId: string) => {
+    dispatch(removeAccommodation({ dayId }));
+    dispatch(selectAccommodation(null)); // Close modal if open
+  };
+
+  const handleRemoveActivity = (dayId: string, activityId: string) => {
+    dispatch(removeActivity({ dayId, activityId }));
+    dispatch(selectActivity(null));
+  };
+
+  const handleSaveManualAccommodation = (accommodation: Accommodation) => {
+    if (manualAccommodationDayId) {
+      dispatch(setAccommodationAction({ dayId: manualAccommodationDayId, accommodation }));
+      setManualAccommodationDayId(null);
+    }
+  };
+
+  const handleSaveManualActivity = (activity: Activity) => {
+    if (manualActivityDayId) {
+      dispatch(addActivity({ dayId: manualActivityDayId, activity }));
+      setManualActivityDayId(null);
+    }
+  };
+
   const handleGetAccommodation = async (dayId: string) => {
     try {
       const day = itinerary.itinerary.find(d => d.id === dayId);
@@ -96,9 +126,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
       onDragCancel={handleDragCancel}
       measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
     >
-      {/* Architectural Grid Layout */}
+      {/* -- Architectural Grid Layout -- */}
+      {/* Uses CSS Grid to toggle sidebar visibility with smooth transition */}
       <div className="grid h-screen overflow-hidden" style={{ transition: 'grid-template-columns 0.5s ease-in-out', gridTemplateColumns: sidebarOpen ? '340px 1fr' : '0px 1fr' }}>
-        {/* Discovery Sidebar - Structural Column */}
+
+        {/* -- Discovery Sidebar (Left Column) -- */}
         <div className="relative z-20 overflow-hidden">
           <DiscoverySidebar
             isOpen={sidebarOpen}
@@ -147,12 +179,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
               isPanning={isPanning}
               itinerary={itinerary.itinerary}
               activeId={activeId}
-              onActivityClick={(activity) => dispatch(selectActivity(activity))}
-              onAccommodationClick={(accommodation) => dispatch(selectAccommodation(accommodation))}
+              onSelectActivity={(activity) => dispatch(selectActivity(activity))}
+              onSelectAccommodation={(accommodation) => dispatch(selectAccommodation(accommodation))}
+              onAutoSuggestAccommodation={handleGetAccommodation}
               onPanStart={() => setIsPanning(true)}
               onPan={handlePan}
               onPanEnd={() => setIsPanning(false)}
               onWheel={handleWheel}
+              onManualAccommodation={(dayId) => setManualAccommodationDayId(dayId)}
+              onAddActivity={(dayId) => setManualActivityDayId(dayId)}
             />
 
             {/* Drag Overlay */}
@@ -187,7 +222,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
           onClose={() => dispatch(selectActivity(null))}
           title="Activity Details"
         >
-          {selectedActivity && <ActivityDetailContent activity={selectedActivity} />}
+          {selectedActivity && (
+            <ActivityDetailContent
+              activity={selectedActivity}
+              onRemove={() => {
+                const day = itinerary.itinerary.find(d => d.activities.some(a => a.id === selectedActivity.id));
+                if (day) handleRemoveActivity(day.id, selectedActivity.id);
+              }}
+            />
+          )}
         </DetailModal>
 
         {/* Accommodation Detail Modal */}
@@ -197,9 +240,32 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
           title="Accommodation Details"
         >
           {selectedAccommodation && (
-            <AccommodationDetailContent accommodation={selectedAccommodation} />
+            <AccommodationDetailContent
+              accommodation={selectedAccommodation}
+              onRemove={() => {
+                // Find the day ID for this accommodation? 
+                // We need to pass the dayID specifically or find it in the state.
+                // A simple lookup in itinerary works.
+                const day = itinerary.itinerary.find(d => d.accommodation?.hotelName === selectedAccommodation.hotelName); // Simple match
+                if (day) handleRemoveAccommodation(day.id);
+              }}
+            />
           )}
         </DetailModal>
+
+        {/* Manual Accommodation Form Modal */}
+        <AccommodationFormModal
+          isOpen={manualAccommodationDayId !== null}
+          onClose={() => setManualAccommodationDayId(null)}
+          onSave={handleSaveManualAccommodation}
+        />
+
+        {/* Manual Activity Form Modal */}
+        <ActivityFormModal
+          isOpen={manualActivityDayId !== null}
+          onClose={() => setManualActivityDayId(null)}
+          onSave={handleSaveManualActivity}
+        />
       </div>
     </DndContext>
   );
