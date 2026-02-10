@@ -11,28 +11,29 @@ import { TripState } from '@types';
 // ========================================
 // MOCK DATA FOR DEVELOPMENT
 // ========================================
-import { generateMockItinerary } from '../services/geminiServiceMock';
-
+import { fetchItinerary, setTripState, resetDashboard } from './state/slices/dashboardSlice';
 import { useAppDispatch } from './state';
-import { setItinerary, setTripState, resetDashboard } from './state/slices/dashboardSlice';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const [view, setView] = useState<'landing' | 'dashboard'>('landing');
   const [loading, setLoading] = useState(false);
 
+  // -- API Integration --
+  // Fetches the persistent itinerary from the backend (or JSON server)
   const handleGenerate = async (trip: TripState) => {
     setLoading(true);
     dispatch(setTripState(trip));
 
     try {
-      // Using mock data instead of real API
-      const data = await generateMockItinerary(trip);
-      dispatch(setItinerary(data));
+      // Fetch the 'current' trip from the persistent backend
+      // In dev mode, this hits port 3001 (db.json)
+      await dispatch(fetchItinerary('current')).unwrap();
       setView('dashboard');
     } catch (err) {
       console.error("Itinerary generation failed", err);
-      alert("Failed to generate itinerary. Please try again.");
+      // Fallback or alert
+      alert("Failed to load itinerary. Ensure json-server is running (port 3001).");
     } finally {
       setLoading(false);
     }

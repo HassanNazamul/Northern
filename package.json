@@ -15,6 +15,7 @@
     "@dnd-kit/utilities": "3.2.1",
     "@google/genai": "^1.40.0",
     "@reduxjs/toolkit": "^2.11.2",
+    "axios": "^1.13.5",
     "clsx": "latest",
     "framer-motion": "^10.16.4",
     "leaflet": "1.9.4",

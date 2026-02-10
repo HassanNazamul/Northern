@@ -1,7 +1,16 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { getDiscoverySuggestions } from '@services';
+import { api } from '@api/axiosInstance';
 
 export type DiscoveryTab = 'culinary' | 'exploration' | 'stay' | 'events';
+
+// -- Mock data mapping --
+// Maps the UI tabs to the categories in db.json
+const TAB_CATEGORY_MAP: Record<string, string[]> = {
+    culinary: ['Food', 'Drink'],
+    exploration: ['Adventure', 'Sightseeing', 'Relaxation'],
+    stay: ['Accommodation', 'Hotel'],
+    events: ['Event', 'Festival']
+};
 
 interface DiscoveryState {
     activeTab: DiscoveryTab;
@@ -19,14 +28,21 @@ const initialState: DiscoveryState = {
 
 export const fetchDiscoveryItems = createAsyncThunk(
     'discovery/fetchItems',
-    async ({ tab, destination, vibe, budget }: {
-        tab: DiscoveryTab;
-        destination: string;
-        vibe: string;
-        budget: number;
-    }) => {
-        const items = await getDiscoverySuggestions(tab, destination, vibe, budget);
-        return items;
+    async ({ tab }: { tab: DiscoveryTab }) => {
+        // Fetch all suggestions from the mock DB
+        const response = await api.get<any[]>('/suggestions');
+        const allItems = response.data;
+
+        // Filter based on the active tab
+        const allowedCategories = TAB_CATEGORY_MAP[tab] || [];
+
+        return allItems.filter(item => {
+            // Accommodations might not have a 'category' field but have 'hotelName'
+            if (tab === 'stay' && item.hotelName) return true;
+            if (tab !== 'stay' && item.hotelName) return false;
+
+            return allowedCategories.includes(item.category);
+        });
     }
 );
 

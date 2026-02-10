@@ -22,6 +22,9 @@
       "@/*": [
         "./*"
       ],
+      "@api/*": [
+        "./src/api/*"
+      ],
       "@features/*": [
         "./src/features/*"
       ],

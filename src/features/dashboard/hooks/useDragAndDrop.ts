@@ -20,6 +20,7 @@ import {
     moveActivityBetweenDays,
     reorderDays,
     setAccommodation,
+    persistItinerary,
 } from '@state/slices/dashboardSlice';
 import { DRAG_TYPES } from '../utils';
 
@@ -128,6 +129,7 @@ export const useDragAndDrop = () => {
                         oldIndex,
                         newIndex: insertionIndex,
                     }));
+                    dispatch(persistItinerary());
                 } else {
                     dispatch(dragCancel());
                 }
@@ -140,6 +142,7 @@ export const useDragAndDrop = () => {
                     activityId: active.id as string,
                     targetIndex: insertionIndex,
                 }));
+                dispatch(persistItinerary());
             }
         }
 
@@ -150,6 +153,7 @@ export const useDragAndDrop = () => {
 
             if (oldIdx !== -1 && newIdx !== -1 && oldIdx !== newIdx) {
                 dispatch(reorderDays({ oldIndex: oldIdx, newIndex: newIdx }));
+                dispatch(persistItinerary());
             } else {
                 dispatch(dragCancel());
             }
@@ -196,6 +200,7 @@ export const useDragAndDrop = () => {
                         activity: newActivity,
                         insertionIndex,
                     }));
+                    dispatch(persistItinerary());
                 }
             } else {
                 dispatch(dragCancel());
@@ -216,6 +221,7 @@ export const useDragAndDrop = () => {
                     dayId: targetDayId,
                     accommodation: activeDragItem,
                 }));
+                dispatch(persistItinerary());
             } else {
                 dispatch(dragCancel());
             }

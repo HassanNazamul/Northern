@@ -1,8 +1,38 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { ItineraryResponse, DayPlan, Activity, Accommodation, TripState } from '@types';
 import { recalculateDayTimeline } from '@features/dashboard/utils';
+import { api } from '@api/axiosInstance';
+import { RootState } from '../store';
+
+// -- Async Thunks --
+
+// -- Async Thunks --
+// Uses the centralized API instance to fetch data from the configured VITE_API_BASE_URL
+export const fetchItinerary = createAsyncThunk(
+    'dashboard/fetchItinerary',
+    async (tripId: string = 'current') => {
+        console.log(`Fetching itinerary for ${tripId} from backend...`);
+        const response = await api.get<ItineraryResponse>(`/trips/${tripId}`);
+        console.log('Itinerary received:', response.data);
+        return response.data;
+    }
+);
+
+export const persistItinerary = createAsyncThunk(
+    'dashboard/persistItinerary',
+    async (_, { getState }) => {
+        const state = getState() as RootState;
+        const itinerary = state.dashboard.itinerary;
+        if (!itinerary) return;
+
+        // We use 'current' as the ID for the main trip in this mock setup
+        await api.patch(`/trips/current`, itinerary);
+    }
+);
 
 interface DashboardState {
+    loading: boolean;
+    error: string | null;
     // -- Data State --
     // Stores the full itinerary API response (days, activities)
     itinerary: ItineraryResponse | null;
@@ -24,6 +54,8 @@ interface DashboardState {
 }
 
 const initialState: DashboardState = {
+    loading: false,
+    error: null,
     itinerary: null,
     tripState: null,
     dragState: {
@@ -198,6 +230,21 @@ const dashboardSlice = createSlice({
             state.selectedAccommodation = action.payload;
         },
     },
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchItinerary.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchItinerary.fulfilled, (state, action) => {
+                state.loading = false;
+                state.itinerary = action.payload;
+            })
+            .addCase(fetchItinerary.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message || 'Failed to fetch itinerary';
+            });
+    }
 });
 
 export const {
