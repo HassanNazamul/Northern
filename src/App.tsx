@@ -1,21 +1,34 @@
 import React, { useState } from 'react';
 import { LandingPage } from '@features/landing';
 import { Dashboard } from '@features/dashboard';
-import { TripState, ItineraryResponse } from '@types';
-import { generateInitialItinerary } from '@services';
+import { TripState } from '@types';
+
+// ========================================
+// REAL API (Commented out due to rate limits)
+// ========================================
+// import { generateInitialItinerary } from '@services';
+
+// ========================================
+// MOCK DATA FOR DEVELOPMENT
+// ========================================
+import { generateMockItinerary } from '../services/geminiServiceMock';
+
+import { useAppDispatch } from './state';
+import { setItinerary, setTripState, resetDashboard } from './state/slices/dashboardSlice';
 
 const App: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [view, setView] = useState<'landing' | 'dashboard'>('landing');
   const [loading, setLoading] = useState(false);
-  const [tripData, setTripData] = useState<TripState | null>(null);
-  const [itinerary, setItinerary] = useState<ItineraryResponse | null>(null);
 
   const handleGenerate = async (trip: TripState) => {
     setLoading(true);
-    setTripData(trip);
+    dispatch(setTripState(trip));
+
     try {
-      const data = await generateInitialItinerary(trip);
-      setItinerary(data);
+      // Using mock data instead of real API
+      const data = await generateMockItinerary(trip);
+      dispatch(setItinerary(data));
       setView('dashboard');
     } catch (err) {
       console.error("Itinerary generation failed", err);
@@ -26,24 +39,14 @@ const App: React.FC = () => {
   };
 
   const reset = () => {
+    dispatch(resetDashboard());
     setView('landing');
-    setItinerary(null);
-    setTripData(null);
   };
 
-  return (
-    <div className="min-h-screen font-sans">
-      {view === 'landing' ? (
-        <LandingPage onGenerate={handleGenerate} loading={loading} />
-      ) : (
-        <Dashboard
-          itinerary={itinerary!}
-          tripState={tripData!}
-          onReset={reset}
-          setItinerary={setItinerary}
-        />
-      )}
-    </div>
+  return view === 'landing' ? (
+    <LandingPage onGenerate={handleGenerate} loading={loading} />
+  ) : (
+    <Dashboard onReset={reset} />
   );
 };
 

@@ -44,7 +44,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGenerate, loading }) => {
                 onSubmit={handleSubmit}
                 className="z-10 w-full max-w-4xl bg-white/5 backdrop-blur-xl p-8 rounded-3xl border border-white/10 shadow-2xl space-y-8"
             >
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Row 1: Destination and Dates */}
                     <div className="space-y-2">
                         <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                             <MapPin className="w-3 h-3" /> Destination
@@ -81,6 +82,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGenerate, loading }) => {
                         </div>
                     </div>
 
+                    {/* Row 2: Vibe and Budget */}
                     <div className="space-y-2">
                         <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                             <Compass className="w-3 h-3" /> Vibe

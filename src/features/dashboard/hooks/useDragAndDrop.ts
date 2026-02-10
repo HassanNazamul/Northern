@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     DragStartEvent,
     DragOverEvent,
@@ -10,16 +10,23 @@ import {
     useSensors,
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates, arrayMove } from '@dnd-kit/sortable';
-import { ItineraryResponse, Activity, DayPlan } from '@types';
-import { DRAG_TYPES, recalculateDayTimeline } from '../utils';
+import { Activity } from '@types';
+import { useAppDispatch, useAppSelector, selectItinerary, selectDragState } from '@state';
+import {
+    dragStart,
+    dragCancel,
+    addActivity,
+    reorderActivitiesWithinDay,
+    moveActivityBetweenDays,
+    reorderDays,
+    setAccommodation,
+} from '@state/slices/dashboardSlice';
+import { DRAG_TYPES } from '../utils';
 
-export const useDragAndDrop = (
-    itinerary: ItineraryResponse,
-    setItinerary: React.Dispatch<React.SetStateAction<ItineraryResponse | null>>
-) => {
-    const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-    const [activeDragType, setActiveDragType] = useState<string | null>(null);
-    const [activeDragItem, setActiveDragItem] = useState<any>(null);
+export const useDragAndDrop = () => {
+    const dispatch = useAppDispatch();
+    const itinerary = useAppSelector(selectItinerary);
+    const { activeId, activeDragType, activeDragItem } = useAppSelector(selectDragState);
 
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -27,6 +34,7 @@ export const useDragAndDrop = (
     );
 
     const findDayId = (id: UniqueIdentifier): UniqueIdentifier | null => {
+        if (!itinerary) return null;
         if (itinerary.itinerary.find(d => d.id === id)) return id;
         const dayWithActivity = itinerary.itinerary.find(d => d.activities.some(a => a.id === id));
         if (dayWithActivity) return dayWithActivity.id;
@@ -35,147 +43,180 @@ export const useDragAndDrop = (
 
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
-        setActiveId(active.id);
-        setActiveDragType(active.data.current?.type);
-        setActiveDragItem(active.data.current?.item || active.data.current?.activity || active.data.current?.dayPlan);
+        const type = active.data.current?.type;
+        const item = active.data.current?.item || active.data.current?.activity || active.data.current?.dayPlan;
+
+        dispatch(dragStart({
+            id: active.id as string,
+            type: type || '',
+            item,
+        }));
     };
 
     const handleDragOver = (event: DragOverEvent) => {
-        const { active, over } = event;
-        const overId = over?.id;
-        if (!overId || !activeDragType) return;
-
-        if (activeDragType === DRAG_TYPES.ACTIVITY) {
-            const activeDayId = findDayId(active.id);
-            let overDayId: UniqueIdentifier | null = null;
-
-            if (over.data.current?.type === 'ACTIVITY_LIST') overDayId = over.data.current.dayId;
-            else if (over.data.current?.type === DRAG_TYPES.DAY) overDayId = over.data.current.dayPlan.id;
-            else overDayId = findDayId(overId);
-
-            if (!activeDayId || !overDayId || activeDayId === overDayId) return;
-
-            setItinerary(prev => {
-                if (!prev) return null;
-                const activeDayIdx = prev.itinerary.findIndex(d => d.id === activeDayId);
-                const overDayIdx = prev.itinerary.findIndex(d => d.id === overDayId);
-
-                const newItinerary = [...prev.itinerary];
-                const activeItems = [...newItinerary[activeDayIdx].activities];
-                const overItems = [...newItinerary[overDayIdx].activities];
-
-                const activeIdx = activeItems.findIndex(a => a.id === active.id);
-                const [movedItem] = activeItems.splice(activeIdx, 1);
-
-                let newIndex = overItems.length;
-                if (over.data.current?.type === DRAG_TYPES.ACTIVITY) {
-                    const overIdx = overItems.findIndex(a => a.id === overId);
-                    newIndex = overIdx >= 0 ? overIdx : overItems.length;
-                }
-
-                overItems.splice(newIndex, 0, movedItem);
-
-                newItinerary[activeDayIdx] = { ...newItinerary[activeDayIdx], activities: recalculateDayTimeline(activeItems) };
-                newItinerary[overDayIdx] = { ...newItinerary[overDayIdx], activities: recalculateDayTimeline(overItems) };
-
-                return { ...prev, itinerary: newItinerary };
-            });
-        }
-    };
-
-    const handleDragCancel = () => {
-        setActiveId(null);
-        setActiveDragType(null);
-        setActiveDragItem(null);
+        // handleDragOver is for visual feedback only
+        // Actual moves happen in handleDragEnd for smooth experience
     };
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
-        setActiveId(null);
-        setActiveDragType(null);
-        setActiveDragItem(null);
-
-        if (!over) return;
-
-        if (activeDragType === DRAG_TYPES.SIDEBAR_ACTIVITY) {
-            let targetDayId: UniqueIdentifier | null = null;
-            if (over.data.current?.type === 'ACTIVITY_LIST') targetDayId = over.data.current.dayId;
-            else if (over.data.current?.type === DRAG_TYPES.DAY) targetDayId = over.data.current.dayPlan.id;
-            else if (over.data.current?.type === DRAG_TYPES.ACTIVITY) targetDayId = findDayId(over.id);
-
-            if (targetDayId) {
-                const item = active.data.current?.item;
-                setItinerary(prev => {
-                    if (!prev) return null;
-                    const dayIndex = prev.itinerary.findIndex(d => d.id === targetDayId);
-                    const newItinerary = [...prev.itinerary];
-                    const targetDay = newItinerary[dayIndex];
-
-                    const newActivity: Activity = {
-                        id: crypto.randomUUID(),
-                        title: item.title,
-                        location: item.location,
-                        description: item.description,
-                        cost_estimate: item.cost_estimate,
-                        category: item.category,
-                        time: "Flexible",
-                        durationMinutes: item.durationMinutes || 90
-                    };
-
-                    targetDay.activities = recalculateDayTimeline([...targetDay.activities, newActivity]);
-                    return { ...prev, itinerary: newItinerary };
-                });
-            }
+        if (!over || !activeDragType || !itinerary) {
+            dispatch(dragCancel());
+            return;
         }
 
-        if (activeDragType === DRAG_TYPES.SIDEBAR_ACCOMMODATION) {
-            let targetDayId: UniqueIdentifier | null = null;
-            if (over.data.current?.type === 'HOTEL_ZONE') targetDayId = over.data.current.dayId;
-            else if (over.data.current?.type === DRAG_TYPES.DAY) targetDayId = over.data.current.dayPlan.id;
-
-            if (targetDayId) {
-                const item = active.data.current?.item;
-                setItinerary(prev => {
-                    if (!prev) return null;
-                    const dayIndex = prev.itinerary.findIndex(d => d.id === targetDayId);
-                    const newItinerary = [...prev.itinerary];
-                    newItinerary[dayIndex].accommodation = item;
-                    return { ...prev, itinerary: newItinerary };
-                });
-            }
-        }
-
+        // Handle activity reordering within day
         if (activeDragType === DRAG_TYPES.ACTIVITY) {
-            const dayId = findDayId(active.id);
-            if (dayId) {
-                const dayIndex = itinerary.itinerary.findIndex(d => d.id === dayId);
-                const activities = itinerary.itinerary[dayIndex].activities;
-                const oldIdx = activities.findIndex(a => a.id === active.id);
-                const newIdx = activities.findIndex(a => a.id === over.id);
+            const sourceDayId = findDayId(active.id);
+            if (!sourceDayId) {
+                dispatch(dragCancel());
+                return;
+            }
 
-                if (oldIdx !== -1 && newIdx !== -1 && oldIdx !== newIdx) {
-                    setItinerary(prev => {
-                        if (!prev) return null;
-                        const newItin = [...prev.itinerary];
-                        newItin[dayIndex].activities = recalculateDayTimeline(arrayMove(activities, oldIdx, newIdx));
-                        return { ...prev, itinerary: newItin };
-                    });
+            // Determine target day and insertion index
+            let targetDayId: UniqueIdentifier | null = null;
+            let insertionIndex: number | undefined = undefined;
+
+            // Check if dropped on another activity
+            const droppedOnActivity = itinerary.itinerary.find(d =>
+                d.activities.some(a => a.id === over.id)
+            );
+
+            if (droppedOnActivity) {
+                targetDayId = droppedOnActivity.id;
+                insertionIndex = droppedOnActivity.activities.findIndex(a => a.id === over.id);
+            }
+            // Check if dropped on activity list zone
+            else if (over.data.current?.type === 'ACTIVITY_LIST') {
+                targetDayId = over.data.current.dayId;
+                insertionIndex = undefined; // Add to end
+            }
+            // Check if dropped on a day card itself
+            else if (itinerary.itinerary.find(d => d.id === over.id)) {
+                targetDayId = over.id;
+                insertionIndex = undefined; // Add to end
+            }
+
+            if (!targetDayId) {
+                dispatch(dragCancel());
+                return;
+            }
+
+            // Same day reordering
+            if (sourceDayId === targetDayId) {
+                const day = itinerary.itinerary.find(d => d.id === sourceDayId);
+                if (!day) {
+                    dispatch(dragCancel());
+                    return;
+                }
+
+                const oldIndex = day.activities.findIndex(a => a.id === active.id);
+
+                // If dropped on another activity in same day
+                if (insertionIndex !== undefined && oldIndex !== insertionIndex) {
+                    dispatch(reorderActivitiesWithinDay({
+                        dayId: sourceDayId as string,
+                        oldIndex,
+                        newIndex: insertionIndex,
+                    }));
+                } else {
+                    dispatch(dragCancel());
                 }
             }
-        }
-
-        if (activeDragType === DRAG_TYPES.DAY && over.data.current?.type === DRAG_TYPES.DAY) {
-            const oldIdx = itinerary.itinerary.findIndex(d => d.id === active.id);
-            const newIdx = itinerary.itinerary.findIndex(d => d.id === over.id);
-            if (oldIdx !== newIdx) {
-                setItinerary(prev => {
-                    if (!prev) return null;
-                    const reorderedDays = Array.from(arrayMove(prev.itinerary, oldIdx, newIdx));
-                    const newDays: DayPlan[] = reorderedDays.map((d: DayPlan, i) => ({ ...d, day: i + 1 }));
-                    return { ...prev, itinerary: newDays };
-                });
+            // Cross-day move
+            else {
+                dispatch(moveActivityBetweenDays({
+                    sourceDayId: sourceDayId as string,
+                    targetDayId: targetDayId as string,
+                    activityId: active.id as string,
+                    targetIndex: insertionIndex,
+                }));
             }
         }
+
+        // Handle day reordering
+        else if (activeDragType === DRAG_TYPES.DAY) {
+            const oldIdx = itinerary.itinerary.findIndex(d => d.id === active.id);
+            const newIdx = itinerary.itinerary.findIndex(d => d.id === over.id);
+
+            if (oldIdx !== -1 && newIdx !== -1 && oldIdx !== newIdx) {
+                dispatch(reorderDays({ oldIndex: oldIdx, newIndex: newIdx }));
+            } else {
+                dispatch(dragCancel());
+            }
+        }
+
+        // Handle sidebar activity drop
+        else if (activeDragType === DRAG_TYPES.SIDEBAR_ACTIVITY) {
+            let targetDayId: string | null = null;
+            let insertionIndex: number | undefined = undefined;
+
+            // Check if dropped on a specific activity - insert before it
+            const droppedOnActivity = itinerary.itinerary.find(d =>
+                d.activities.some(a => a.id === over.id)
+            );
+
+            if (droppedOnActivity) {
+                targetDayId = droppedOnActivity.id;
+                insertionIndex = droppedOnActivity.activities.findIndex(a => a.id === over.id);
+            }
+            // Check if dropped on activity list zone - insert at end
+            else if (over.data.current?.type === 'ACTIVITY_LIST') {
+                targetDayId = over.data.current.dayId;
+                insertionIndex = undefined; // Will add to end
+            }
+
+            if (targetDayId && activeDragItem) {
+                const day = itinerary.itinerary.find(d => d.id === targetDayId);
+                if (day) {
+                    const newActivity: Activity = {
+                        id: `${activeDragItem.id || activeDragItem.title}-${Date.now()}`,
+                        title: activeDragItem.title,
+                        description: activeDragItem.description || '',
+                        location: activeDragItem.location || '',
+                        time: day.activities.length > 0
+                            ? day.activities[day.activities.length - 1].time
+                            : '09:00',
+                        cost_estimate: activeDragItem.cost_estimate || 0,
+                        category: activeDragItem.category || 'Sightseeing',
+                        durationMinutes: activeDragItem.durationMinutes || 120,
+                    };
+
+                    dispatch(addActivity({
+                        dayId: targetDayId,
+                        activity: newActivity,
+                        insertionIndex,
+                    }));
+                }
+            } else {
+                dispatch(dragCancel());
+            }
+        }
+
+        // Handle sidebar accommodation drop
+        else if (activeDragType === DRAG_TYPES.SIDEBAR_ACCOMMODATION) {
+            let targetDayId: string | null = null;
+
+            // Check if dropped on hotel zone
+            if (over.data.current?.type === 'HOTEL_ZONE') {
+                targetDayId = over.data.current.dayId;
+            }
+
+            if (targetDayId && activeDragItem) {
+                dispatch(setAccommodation({
+                    dayId: targetDayId,
+                    accommodation: activeDragItem,
+                }));
+            } else {
+                dispatch(dragCancel());
+            }
+        } else {
+            dispatch(dragCancel());
+        }
+    };
+
+    const handleDragCancel = () => {
+        dispatch(dragCancel());
     };
 
     return {
@@ -189,3 +230,4 @@ export const useDragAndDrop = (
         handleDragCancel,
     };
 };
+

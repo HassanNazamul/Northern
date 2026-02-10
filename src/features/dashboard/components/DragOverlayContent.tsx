@@ -33,7 +33,7 @@ export const DragOverlayContent: React.FC<DragOverlayContentProps> = ({
         >
             {activeId ? (
                 <div style={{
-                    transform: (activeDragType === DRAG_TYPES.DAY || activeDragType === DRAG_TYPES.ACTIVITY) ? `scale(${zoom})` : 'scale(1)',
+                    transform: `scale(${zoom})`,
                     transformOrigin: 'top left',
                     width: 'fit-content',
                     pointerEvents: 'none'

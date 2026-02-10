@@ -34,6 +34,9 @@
       "@services/*": [
         "./src/services/*"
       ],
+      "@state": [
+        "./src/state"
+      ],
       "@state/*": [
         "./src/state/*"
       ],

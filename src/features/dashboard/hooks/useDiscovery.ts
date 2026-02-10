@@ -1,33 +1,33 @@
-import { useState, useCallback, useEffect } from 'react';
-import { getDiscoverySuggestions } from '@services';
+import { useEffect } from 'react';
+import { TripState } from '@types';
+import { useAppDispatch, useAppSelector, selectDiscoveryTab, selectDiscoveryItems, selectDiscoveryLoading } from '@state';
+import { setActiveTab, fetchDiscoveryItems } from '@state/slices/discoverySlice';
+import type { DiscoveryTab } from '@state/slices/discoverySlice';
 
-type DiscoveryTab = 'culinary' | 'exploration' | 'stay' | 'events';
-
-export const useDiscovery = (destination: string, vibe: string, budget: number) => {
-    const [activeTab, setActiveTab] = useState<DiscoveryTab>('exploration');
-    const [discoveryItems, setDiscoveryItems] = useState<any[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-
-    const fetchDiscovery = useCallback(async () => {
-        setIsLoading(true);
-        try {
-            const items = await getDiscoverySuggestions(activeTab, destination, vibe, budget);
-            setDiscoveryItems(items);
-        } catch (e) {
-            console.error(e);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [activeTab, destination, vibe, budget]);
+export const useDiscovery = (tripState: TripState) => {
+    const dispatch = useAppDispatch();
+    const activeTab = useAppSelector(selectDiscoveryTab);
+    const discoveryItems = useAppSelector(selectDiscoveryItems);
+    const discoveryLoading = useAppSelector(selectDiscoveryLoading);
 
     useEffect(() => {
-        fetchDiscovery();
-    }, [activeTab]);
+        const { destination, vibe, budget } = tripState;
+        dispatch(fetchDiscoveryItems({
+            tab: activeTab,
+            destination,
+            vibe,
+            budget,
+        }));
+    }, [activeTab, tripState, dispatch]);
+
+    const handleTabChange = (tab: DiscoveryTab) => {
+        dispatch(setActiveTab(tab));
+    };
 
     return {
         activeTab,
-        setActiveTab,
         discoveryItems,
-        isLoading,
+        discoveryLoading,
+        handleTabChange,
     };
 };

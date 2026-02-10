@@ -45,7 +45,7 @@ export const DashboardCanvas: React.FC<DashboardCanvasProps> = ({
             onMouseUp={onMouseUp}
         >
             <div
-                className="w-full h-full transition-transform duration-75 ease-out origin-center flex items-center justify-center"
+                className="w-full h-full transition-transform duration-75 ease-out origin-top-left"
                 style={{
                     transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
                     cursor: isPanning ? 'grabbing' : 'default'

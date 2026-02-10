@@ -206,9 +206,9 @@ export const getWeather = async (destination: string) => {
   const ai = getAI();
   const prompt = `What is the current weather in ${destination}? Return a JSON object with: temp (Celsius string, e.g. "20°C"), condition (e.g. "Sunny", "Cloudy", "Rainy"), and a brief summary.
   If you cannot determine the weather, return a JSON object with: temp: "N/A", condition: "Unknown", summary: "Weather data unavailable."`;
-  
+
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-2.5-flash-lite',
     contents: prompt,
     config: {
       tools: [{ googleMaps: {} }],
@@ -227,10 +227,10 @@ export const getWeather = async (destination: string) => {
   } catch (error) {
     console.warn("Weather data parsing failed, returning fallback.");
     return {
-        temp: "--",
-        condition: "Unknown",
-        summary: "Could not retrieve weather data.",
-        sourceUrl: null
+      temp: "--",
+      condition: "Unknown",
+      summary: "Could not retrieve weather data.",
+      sourceUrl: null
     };
   }
 };

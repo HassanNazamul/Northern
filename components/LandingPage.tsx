@@ -36,16 +36,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGenerate, loading }) => {
           Your <span className="text-blue-400">Northern Path</span> Awaits.
         </h1>
         <p className="text-lg text-slate-300 leading-relaxed">
-          The ultimate Canadian travel experience, architected by AI. 
+          The ultimate Canadian travel experience, architected by AI.
           From the peak of the Rockies to the tides of the Maritimes.
         </p>
       </div>
 
-      <form 
+      <form
         onSubmit={handleSubmit}
         className="z-10 w-full max-w-4xl bg-white/5 backdrop-blur-xl p-8 rounded-3xl border border-white/10 shadow-2xl space-y-8"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Top Row: Destination and Dates */}
           <div className="space-y-2">
             <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
               <MapPin className="w-3 h-3" /> Destination
@@ -68,20 +69,23 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGenerate, loading }) => {
               <input
                 type="date"
                 required
-                className="w-full bg-white/10 border border-white/10 rounded-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 [color-scheme:dark]"
+                placeholder="yyyy-mm-dd"
+                className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 [color-scheme:dark]"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
               />
               <input
                 type="date"
                 required
-                className="w-full bg-white/10 border border-white/10 rounded-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 [color-scheme:dark]"
+                placeholder="yyyy-mm-dd"
+                className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 [color-scheme:dark]"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
               />
             </div>
           </div>
 
+          {/* Bottom Row: Vibe and Budget */}
           <div className="space-y-2">
             <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
               <Compass className="w-3 h-3" /> Vibe

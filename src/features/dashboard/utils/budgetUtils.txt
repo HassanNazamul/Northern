@@ -1,0 +1,8 @@
+﻿// Calculate total cost from itinerary
+const calculateTotalCost = (itinerary) => {
+  return itinerary.itinerary.reduce((total, day) => {
+    const activitiesCost = day.activities.reduce((sum, act) => sum + act.cost_estimate, 0);
+    const hotelCost = day.accommodation?.pricePerNight || 0;
+    return total + activitiesCost + hotelCost;
+  }, 0);
+};
