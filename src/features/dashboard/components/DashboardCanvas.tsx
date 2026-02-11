@@ -43,7 +43,7 @@ export const DashboardCanvas: React.FC<DashboardCanvasProps> = ({
 }) => {
     return (
         <div
-            className="w-full h-full bg-[#F8FAFC] canvas-bg"
+            className="w-full h-full bg-transparent"
             ref={canvasRef}
             onMouseDown={onMouseDown}
             onMouseMove={onMouseMove}

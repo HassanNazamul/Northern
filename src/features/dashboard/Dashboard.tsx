@@ -1,5 +1,6 @@
 import React from 'react';
 import { DndContext, rectIntersection, MeasuringStrategy } from '@dnd-kit/core';
+import { motion } from 'framer-motion';
 import { ChevronLeft, PanelLeftOpen } from 'lucide-react';
 import { Activity, Accommodation } from '@types';
 import { ChatBot } from '@features/chat';
@@ -143,7 +144,43 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
         </div>
 
         {/* Main Content Area - Flexible Column */}
-        <div className="flex flex-col bg-gray-50 relative z-10 min-w-0">
+        <div className="flex flex-col bg-[#FCFCFC] relative z-10 min-w-0 overflow-hidden">
+
+          {/* -- Live Mesh Background -- */}
+          <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+            {/* Pale Blue Blob - Top Left */}
+            <motion.div
+              animate={{
+                scale: [1, 1.2, 1],
+                x: [0, 50, 0],
+                y: [0, 30, 0],
+                opacity: [0.1, 0.15, 0.1]
+              }}
+              transition={{
+                duration: 20,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="absolute -top-[10%] -left-[10%] w-[800px] h-[800px] bg-blue-500 rounded-full blur-[120px] mix-blend-multiply"
+            />
+
+            {/* Soft Orange Blob - Bottom Right */}
+            <motion.div
+              animate={{
+                scale: [1, 1.1, 1],
+                x: [0, -30, 0],
+                y: [0, -50, 0],
+                opacity: [0.1, 0.12, 0.1]
+              }}
+              transition={{
+                duration: 25,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 2
+              }}
+              className="absolute -bottom-[20%] -right-[10%] w-[600px] h-[600px] bg-orange-400 rounded-full blur-[100px] mix-blend-multiply"
+            />
+          </div>
           {/* Top Bar */}
           {/* Top Bar - Refactored into DashboardHeader */}
           <DashboardHeader

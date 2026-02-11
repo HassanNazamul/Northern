@@ -2,6 +2,7 @@ import React from 'react';
 import { Sparkles, PanelLeftClose, Compass, Utensils, Bed, Music, RefreshCcw } from 'lucide-react';
 import { cn } from '@utils';
 import { SidebarDraggableItem } from './SidebarDraggableItem';
+import { SidebarFooter } from './SidebarFooter';
 
 interface DiscoverySidebarProps {
     isOpen: boolean;
@@ -75,6 +76,9 @@ export const DiscoverySidebar: React.FC<DiscoverySidebarProps> = ({
                     <SidebarDraggableItem key={idx} item={item} type={activeTab === 'stay' ? 'accommodation' : 'activity'} />
                 ))}
             </div>
+
+            {/* -- Footer -- */}
+            <SidebarFooter />
         </div>
     );
 };
