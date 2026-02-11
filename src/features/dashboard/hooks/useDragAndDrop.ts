@@ -19,6 +19,7 @@ import {
     reorderActivitiesWithinDay,
     moveActivityBetweenDays,
     reorderDays,
+    swapDays,
     setAccommodation,
     persistItinerary,
 } from '@state/slices/dashboardSlice';
@@ -146,13 +147,14 @@ export const useDragAndDrop = () => {
             }
         }
 
-        // Handle day reordering
+        // Handle day reordering - using SWAP logic instead of shift
         else if (activeDragType === DRAG_TYPES.DAY) {
             const oldIdx = itinerary.itinerary.findIndex(d => d.id === active.id);
             const newIdx = itinerary.itinerary.findIndex(d => d.id === over.id);
 
             if (oldIdx !== -1 && newIdx !== -1 && oldIdx !== newIdx) {
-                dispatch(reorderDays({ oldIndex: oldIdx, newIndex: newIdx }));
+                // Use swap instead of reorder to directly exchange positions
+                dispatch(swapDays({ index1: oldIdx, index2: newIdx }));
                 dispatch(persistItinerary());
             } else {
                 dispatch(dragCancel());

@@ -10,4 +10,5 @@ export interface Activity {
     coordinates?: { lat: number; lng: number };
     travelTimeFromPrev?: number;
     imageUrl?: string;
+    isDraft?: boolean;
 }

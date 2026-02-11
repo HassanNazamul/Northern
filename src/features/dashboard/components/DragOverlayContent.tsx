@@ -2,6 +2,7 @@ import React from 'react';
 import { DragOverlay, defaultDropAnimationSideEffects } from '@dnd-kit/core';
 import { Sparkles } from 'lucide-react';
 import { DRAG_TYPES } from '../utils';
+import { DayCard } from './DayCard';
 
 interface DragOverlayContentProps {
     activeId: any;
@@ -58,8 +59,14 @@ export const DragOverlayContent: React.FC<DragOverlayContentProps> = ({
                         </div>
                     )}
                     {activeDragType === DRAG_TYPES.DAY && (
-                        <div className="w-[320px] bg-white rounded-3xl shadow-2xl border-4 border-blue-400/50 h-[300px] flex items-center justify-center">
-                            <span className="font-black text-slate-200 text-6xl">D{activeDragItem.day}</span>
+                        <div className="w-[320px] h-[700px] opacity-90 rotate-2 cursor-grabbing">
+                            <DayCard
+                                dayPlan={activeDragItem}
+                                onSelectActivity={() => { }}
+                                onSelectAccommodation={() => { }}
+                                onAutoSuggestAccommodation={() => { }}
+                                activeDragType={null}
+                            />
                         </div>
                     )}
                 </div>

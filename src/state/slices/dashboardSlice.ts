@@ -190,6 +190,18 @@ const dashboardSlice = createSlice({
             state.dragState = initialState.dragState;
         },
 
+        swapDays: (state, action: PayloadAction<{ index1: number; index2: number }>) => {
+            if (!state.itinerary) return;
+
+            const days = [...state.itinerary.itinerary];
+            // Direct swap - no shifting
+            [days[action.payload.index1], days[action.payload.index2]] =
+                [days[action.payload.index2], days[action.payload.index1]];
+
+            state.itinerary.itinerary = days.map((d, i) => ({ ...d, day: i + 1 }));
+            state.dragState = initialState.dragState;
+        },
+
         setAccommodation: (state, action: PayloadAction<{ dayId: string; accommodation: Accommodation | null }>) => {
             if (!state.itinerary) return;
 
@@ -211,6 +223,50 @@ const dashboardSlice = createSlice({
             if (dayIndex !== -1) {
                 delete state.itinerary.itinerary[dayIndex].accommodation;
             }
+        },
+
+        // -- Editable Itinerary Actions --
+        addDay: (state) => {
+            if (!state.itinerary) return;
+            const newDayNum = state.itinerary.itinerary.length + 1;
+            const newDay: DayPlan = {
+                id: `day-${Date.now()}`,
+                day: newDayNum,
+                theme: 'New Day',
+                activities: []
+            };
+            state.itinerary.itinerary.push(newDay);
+            state.itinerary.total_days = newDayNum;
+        },
+
+        deleteDay: (state, action: PayloadAction<{ dayId: string }>) => {
+            if (!state.itinerary) return;
+            const newItinerary = state.itinerary.itinerary.filter(d => d.id !== action.payload.dayId);
+            // Re-index days
+            state.itinerary.itinerary = newItinerary.map((d, index) => ({
+                ...d,
+                day: index + 1
+            }));
+            state.itinerary.total_days = newItinerary.length;
+        },
+
+        updateActivity: (state, action: PayloadAction<{ dayId: string; activityId: string; updates: Partial<Activity> }>) => {
+            if (!state.itinerary) return;
+
+            const dayIndex = state.itinerary.itinerary.findIndex(d => d.id === action.payload.dayId);
+            if (dayIndex === -1) return;
+
+            const activityIndex = state.itinerary.itinerary[dayIndex].activities.findIndex(a => a.id === action.payload.activityId);
+            if (activityIndex === -1) return;
+
+            const activity = state.itinerary.itinerary[dayIndex].activities[activityIndex];
+            const updatedActivity = { ...activity, ...action.payload.updates };
+
+            state.itinerary.itinerary[dayIndex].activities[activityIndex] = updatedActivity;
+
+            // Recalculate timeline if time/duration changed, or just to be safe
+            // This ensures subsequent activities are shifted if necessary
+            state.itinerary.itinerary[dayIndex].activities = recalculateDayTimeline(state.itinerary.itinerary[dayIndex].activities);
         },
 
         // UI State Actions
@@ -258,12 +314,16 @@ export const {
     reorderActivitiesWithinDay,
     moveActivityBetweenDays,
     reorderDays,
+    swapDays,
     setAccommodation,
     removeAccommodation,
     toggleSidebar,
     setSidebarOpen,
     selectActivity,
     selectAccommodation,
+    addDay,
+    deleteDay,
+    updateActivity,
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

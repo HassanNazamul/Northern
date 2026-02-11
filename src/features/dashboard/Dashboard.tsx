@@ -6,7 +6,7 @@ import { ChatBot } from '@features/chat';
 import { getAccommodationSuggestion } from '@services';
 import { useDragAndDrop, useZoomPan, useDiscovery } from './hooks';
 import { useAppSelector, useAppDispatch, selectItinerary, selectTripState, selectSidebarOpen, selectSelectedActivity, selectSelectedAccommodation } from '@state';
-import { setSidebarOpen, selectActivity, selectAccommodation, removeAccommodation, removeActivity, addActivity, setAccommodation as setAccommodationAction } from '@state/slices/dashboardSlice';
+import { setSidebarOpen, selectActivity, selectAccommodation, removeAccommodation, removeActivity, addActivity, setAccommodation as setAccommodationAction, persistItinerary, deleteDay } from '@state/slices/dashboardSlice';
 import {
   DiscoverySidebar,
   DashboardCanvas,
@@ -187,7 +187,25 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
               onPanEnd={() => setIsPanning(false)}
               onWheel={handleWheel}
               onManualAccommodation={(dayId) => setManualAccommodationDayId(dayId)}
-              onAddActivity={(dayId) => setManualActivityDayId(dayId)}
+              onAddActivity={(dayId) => {
+                const newActivity: Activity = {
+                  id: `activity-${Date.now()}`,
+                  title: '',
+                  description: 'New Activity',
+                  time: 'TBD',
+                  durationMinutes: 60,
+                  category: 'Sightseeing',
+                  cost_estimate: 0,
+                  location: 'TBD',
+                  isDraft: true
+                };
+                dispatch(addActivity({ dayId, activity: newActivity }));
+                dispatch(persistItinerary());
+              }}
+              onDeleteDay={(dayId) => {
+                dispatch(deleteDay({ dayId }));
+                dispatch(persistItinerary());
+              }}
             />
 
             {/* Drag Overlay */}

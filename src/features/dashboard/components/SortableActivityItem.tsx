@@ -4,13 +4,17 @@ import { CSS } from '@dnd-kit/utilities';
 import { Clock, DollarSign, GripHorizontal } from 'lucide-react';
 import { Activity } from '@types';
 import { DRAG_TYPES } from '../utils';
+import { useAppDispatch } from '@state';
+import { updateActivity, persistItinerary, removeActivity } from '@state/slices/dashboardSlice';
+import { Check, X } from 'lucide-react';
 
 interface SortableActivityItemProps {
     activity: Activity;
+    dayId: string;
     onClick: () => void;
 }
 
-export const SortableActivityItem: React.FC<SortableActivityItemProps> = ({ activity, onClick }) => {
+export const SortableActivityItem: React.FC<SortableActivityItemProps> = ({ activity, dayId, onClick }) => {
     // -- Sortable Logic --
     // Hooks into dnd-kit's sorting system to allow reordering within the list.
     const {
@@ -22,11 +26,62 @@ export const SortableActivityItem: React.FC<SortableActivityItemProps> = ({ acti
         isDragging,
     } = useSortable({ id: activity.id, data: { type: DRAG_TYPES.ACTIVITY, activity } });
 
+    const dispatch = useAppDispatch();
+    const [draftTitle, setDraftTitle] = React.useState(activity.title);
+
+    const handleSaveDraft = () => {
+        if (!draftTitle.trim()) {
+            // Logic to remove empty draft? For now just return.
+            if (activity.title === '') {
+                dispatch(removeActivity({ dayId, activityId: activity.id }));
+            }
+            return;
+        }
+
+        dispatch(updateActivity({
+            dayId,
+            activityId: activity.id,
+            updates: {
+                title: draftTitle,
+                isDraft: false
+            }
+        }));
+        dispatch(persistItinerary());
+    };
+
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
         opacity: isDragging ? 0 : 1,
     };
+
+    // -- Draft Mode View --
+    if (activity.isDraft) {
+        return (
+            <div
+                ref={setNodeRef}
+                style={style}
+                className="bg-white p-3 rounded-xl border-2 border-dashed border-blue-300 shadow-sm mb-2"
+            >
+                <div className="flex items-center gap-2">
+                    <input
+                        autoFocus
+                        type="text"
+                        value={draftTitle}
+                        onChange={(e) => setDraftTitle(e.target.value)}
+                        placeholder="Enter activity name..."
+                        className="flex-1 bg-transparent border-none outline-none text-sm font-semibold text-slate-800 placeholder:text-slate-400"
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleSaveDraft();
+                            }
+                        }}
+                        onBlur={handleSaveDraft}
+                    />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div

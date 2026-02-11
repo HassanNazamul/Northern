@@ -1,7 +1,8 @@
 import React from 'react';
-import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
+import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
 import { DayPlan, Activity, Accommodation } from '@types';
 import { SortableDayCard } from './SortableDayCard';
+import { AddDayButton } from './AddDayButton';
 
 interface DashboardCanvasProps {
     itinerary: DayPlan[];
@@ -18,7 +19,9 @@ interface DashboardCanvasProps {
     onSelectAccommodation: (accommodation: Accommodation) => void;
     onAutoSuggestAccommodation: (dayId: string) => void;
     onManualAccommodation: (dayId: string) => void;
+
     onAddActivity: (dayId: string) => void;
+    onDeleteDay: (dayId: string) => void;
     activeDragType: string | null;
 }
 
@@ -37,6 +40,7 @@ export const DashboardCanvas: React.FC<DashboardCanvasProps> = ({
     onAutoSuggestAccommodation,
     onManualAccommodation,
     onAddActivity,
+    onDeleteDay,
     activeDragType,
 }) => {
     return (
@@ -59,9 +63,9 @@ export const DashboardCanvas: React.FC<DashboardCanvasProps> = ({
             >
                 <SortableContext
                     items={itinerary.map(d => d.id)}
-                    strategy={horizontalListSortingStrategy}
+                    strategy={rectSortingStrategy}
                 >
-                    <div className="flex gap-12 p-24 w-max h-max">
+                    <div className="grid grid-cols-5 gap-8 p-12 w-max">
                         {itinerary.map((day) => (
                             <SortableDayCard
                                 key={day.id}
@@ -71,9 +75,15 @@ export const DashboardCanvas: React.FC<DashboardCanvasProps> = ({
                                 onAutoSuggestAccommodation={onAutoSuggestAccommodation}
                                 onManualAccommodation={onManualAccommodation}
                                 onAddActivity={onAddActivity}
+                                onDeleteDay={onDeleteDay}
                                 activeDragType={activeDragType}
                             />
                         ))}
+
+                        {/* -- Add New Day Button -- */}
+                        <div className="w-[350px] shrink-0 h-[700px]">
+                            <AddDayButton />
+                        </div>
                     </div>
                 </SortableContext>
             </div>

@@ -3,164 +3,31 @@
     {
       "id": "current",
       "trip_title": "Mock Toronto Adventure",
-      "total_days": 3,
+      "total_days": 5,
       "currency": "CAD",
       "itinerary": [
         {
-          "id": "day-1-mock",
+          "id": "day-3-mock",
           "day": 1,
-          "theme": "Downtown Exploration",
+          "theme": "Waterfront & Departure",
           "accommodation": {
-            "id": "sug-stay-1",
-            "hotelName": "The Ritz-Carlton",
-            "description": "Luxury hotel with a view of the CN Tower.",
-            "rating": 4.8,
-            "pricePerNight": 600,
-            "address": "181 Wellington St W, Toronto",
-            "category": "Hotel",
-            "imageGallery": [
-              "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500"
-            ],
-            "amenities": [
-              "Spa",
-              "Pool",
-              "Luxury Dining"
-            ]
-          },
-          "activities": [
-            {
-              "id": "sug-event-1-1770700498619",
-              "title": "TIFF - Toronto International Film Festival",
-              "description": "World-renowned film festival held annually in September.",
-              "location": "TIFF Bell Lightbox",
-              "time": "9:00 AM",
-              "cost_estimate": 50,
-              "category": "Festival",
-              "durationMinutes": 180,
-              "travelTimeFromPrev": 0
-            },
-            {
-              "id": "activity-1-2",
-              "title": "Ripley's Aquarium",
-              "description": "Explore marine life and underwater tunnels",
-              "time": "12:30 PM",
-              "durationMinutes": 150,
-              "cost_estimate": 35,
-              "category": "Sightseeing",
-              "location": "288 Bremner Blvd, Toronto",
-              "coordinates": {
-                "lat": 43.6424,
-                "lng": -79.386
-              },
-              "travelTimeFromPrev": 30
-            },
-            {
-              "id": "activity-1-3",
-              "title": "Dinner at St. Lawrence Market",
-              "description": "Famous food market with diverse culinary options",
-              "time": "3:18 PM",
-              "durationMinutes": 90,
-              "cost_estimate": 30,
-              "category": "Food",
-              "location": "93 Front St E, Toronto",
-              "coordinates": {
-                "lat": 43.6487,
-                "lng": -79.3716
-              },
-              "travelTimeFromPrev": 18
-            }
-          ]
-        },
-        {
-          "id": "day-2-mock",
-          "day": 2,
-          "theme": "Culture & Arts",
-          "accommodation": {
-            "hotelName": "The Gladstone Hotel",
-            "address": "1214 Queen St W, Toronto, ON",
-            "pricePerNight": 180,
-            "rating": 4.2,
-            "contactNumber": "+1-416-531-4635",
+            "hotelName": "The Westin Harbour Castle",
+            "address": "1 Harbour Square, Toronto, ON",
+            "pricePerNight": 220,
+            "rating": 4.3,
+            "contactNumber": "+1-416-869-1600",
             "bookingUrl": "https://example.com/booking",
-            "mapLink": "https://maps.google.com/?q=Gladstone+Hotel+Toronto",
+            "mapLink": "https://maps.google.com/?q=Westin+Harbour+Castle+Toronto",
             "imageGallery": [
-              "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=500"
+              "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=500"
             ],
             "amenities": [
               "WiFi",
-              "Art Gallery",
-              "Restaurant",
-              "Bar"
+              "Pool",
+              "Spa",
+              "Lake View"
             ],
-            "description": "Boutique hotel with artistic flair in West Queen West"
-          },
-          "activities": [
-            {
-              "id": "activity-2-1",
-              "title": "Royal Ontario Museum (ROM)",
-              "description": "World-class museum of art, culture, and natural history",
-              "time": "9:00 AM",
-              "durationMinutes": 180,
-              "cost_estimate": 25,
-              "category": "Sightseeing",
-              "location": "100 Queen's Park, Toronto",
-              "coordinates": {
-                "lat": 43.6677,
-                "lng": -79.3948
-              },
-              "travelTimeFromPrev": 0
-            },
-            {
-              "id": "activity-2-2",
-              "title": "Kensington Market Exploration",
-              "description": "Vibrant multicultural neighborhood with unique shops and cafes",
-              "time": "12:19 PM",
-              "durationMinutes": 120,
-              "cost_estimate": 20,
-              "category": "Relaxation",
-              "location": "Kensington Ave, Toronto",
-              "coordinates": {
-                "lat": 43.6544,
-                "lng": -79.4008
-              },
-              "travelTimeFromPrev": 19
-            },
-            {
-              "id": "activity-2-3",
-              "title": "Dinner at Chinatown",
-              "description": "Authentic Asian cuisine in Toronto's bustling Chinatown",
-              "time": "2:35 PM",
-              "durationMinutes": 90,
-              "cost_estimate": 25,
-              "category": "Food",
-              "location": "Spadina Ave, Toronto",
-              "coordinates": {
-                "lat": 43.6532,
-                "lng": -79.3983
-              },
-              "travelTimeFromPrev": 16
-            }
-          ]
-        },
-        {
-          "id": "day-3-mock",
-          "day": 3,
-          "theme": "Waterfront & Departure",
-          "accommodation": {
-            "id": "sug-stay-2",
-            "hotelName": "Drake Hotel",
-            "description": "Trendy boutique hotel in the heart of Queen West.",
-            "rating": 4.4,
-            "pricePerNight": 250,
-            "address": "1150 Queen St W, Toronto",
-            "category": "Accommodation",
-            "imageGallery": [
-              "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=500"
-            ],
-            "amenities": [
-              "Rooftop Bar",
-              "Live Music"
-            ]
+            "description": "Waterfront hotel with stunning lake views"
           },
           "activities": [
             {
@@ -179,25 +46,29 @@
               "travelTimeFromPrev": 0
             },
             {
-              "id": "activity-1-1",
-              "title": "CN Tower Visit",
-              "description": "Iconic Toronto landmark with stunning city views",
-              "time": "1:18 PM",
-              "durationMinutes": 120,
-              "cost_estimate": 40,
+              "id": "activity-1770794759632",
+              "title": "Lund",
+              "description": "New Activity",
+              "time": "1:30 PM",
+              "durationMinutes": 60,
               "category": "Sightseeing",
-              "location": "301 Front St W, Toronto",
-              "coordinates": {
-                "lat": 43.6426,
-                "lng": -79.3871
-              },
-              "travelTimeFromPrev": 18
-            },
+              "cost_estimate": 0,
+              "location": "TBD",
+              "isDraft": false,
+              "travelTimeFromPrev": 30
+            }
+          ]
+        },
+        {
+          "id": "day-1770794677898",
+          "day": 2,
+          "theme": "New Day",
+          "activities": [
             {
               "id": "activity-3-2",
               "title": "Harbourfront Centre",
               "description": "Cultural center with art galleries and lakefront views",
-              "time": "3:35 PM",
+              "time": "9:00 AM",
               "durationMinutes": 90,
               "cost_estimate": 0,
               "category": "Sightseeing",
@@ -206,9 +77,27 @@
                 "lat": 43.6385,
                 "lng": -79.3817
               },
-              "travelTimeFromPrev": 17
+              "travelTimeFromPrev": 0
             }
           ]
+        },
+        {
+          "id": "day-1770794690567",
+          "day": 3,
+          "theme": "New Day",
+          "activities": []
+        },
+        {
+          "id": "day-1770794688655",
+          "day": 4,
+          "theme": "New Day",
+          "activities": []
+        },
+        {
+          "id": "day-1770794689580",
+          "day": 5,
+          "theme": "New Day",
+          "activities": []
         }
       ],
       "sidebar_suggestions": [

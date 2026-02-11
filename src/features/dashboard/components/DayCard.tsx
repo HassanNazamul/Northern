@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { Bed, Star, Sparkles, GripVertical } from 'lucide-react';
+import { Bed, Star, Sparkles, GripVertical, Plus, Trash2 } from 'lucide-react';
 import { cn } from '@utils';
 import { DayPlan, Activity, Accommodation } from '@types';
 import { DRAG_TYPES } from '../utils';
@@ -14,6 +14,7 @@ interface DayCardProps {
     onAutoSuggestAccommodation: (dayId: string) => void;
     onManualAccommodation?: (dayId: string) => void;
     onAddActivity?: (dayId: string) => void;
+    onDeleteDay?: (dayId: string) => void;
     activeDragType: string | null;
     dragHandleProps?: {
         attributes: any;
@@ -28,6 +29,7 @@ export const DayCard: React.FC<DayCardProps> = ({
     onAutoSuggestAccommodation,
     onManualAccommodation,
     onAddActivity,
+    onDeleteDay,
     activeDragType,
     dragHandleProps
 }) => {
@@ -125,6 +127,7 @@ export const DayCard: React.FC<DayCardProps> = ({
                         <SortableActivityItem
                             key={activity.id}
                             activity={activity}
+                            dayId={dayPlan.id}
                             onClick={() => onSelectActivity(activity)}
                         />
                     ))}
@@ -135,11 +138,39 @@ export const DayCard: React.FC<DayCardProps> = ({
                         <span className="text-xs font-medium">No activities planned</span>
                     </div>
                 )}
+
+                {/* -- Add Activity Button -- */}
+                <button
+                    onClick={() => onAddActivity && onAddActivity(dayPlan.id)}
+                    className="w-full mt-3 py-3 px-4 flex items-center justify-center gap-2
+                               rounded-xl border border-dashed border-slate-200 dark:border-slate-700
+                               text-slate-400 hover:text-blue-500 hover:border-blue-500/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/10
+                               transition-all duration-200 group opacity-70 hover:opacity-100 mb-4"
+                >
+                    <Plus className="w-4 h-4" />
+                    <span className="text-sm font-medium">Add Activity</span>
+                </button>
             </div>
 
-            <div className="p-3 bg-slate-50 border-t border-slate-100 shrink-0 text-[10px] font-bold text-slate-400 flex justify-between uppercase tracking-wider">
-                <span>{dayPlan.activities.length} Stops</span>
-                <span>Est: ${dayPlan.activities.reduce((s, a) => s + a.cost_estimate, 0) + (dayPlan.accommodation?.pricePerNight || 0)}</span>
+            <div className="p-3 bg-slate-50 border-t border-slate-100 shrink-0 flex items-center justify-between">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider w-1/3 text-left">
+                    {dayPlan.activities.length} Stops
+                </span>
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider w-1/3 text-center">
+                    Est: ${dayPlan.activities.reduce((s, a) => s + a.cost_estimate, 0) + (dayPlan.accommodation?.pricePerNight || 0)}
+                </span>
+                <div className="w-1/3 flex justify-end">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onDeleteDay?.(dayPlan.id);
+                        }}
+                        className="text-slate-300 hover:text-red-500 transition-colors p-1 rounded-md hover:bg-red-50"
+                        title="Delete Day"
+                    >
+                        <Trash2 className="w-4 h-4" />
+                    </button>
+                </div>
             </div>
         </div>
     );
