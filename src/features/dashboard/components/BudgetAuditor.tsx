@@ -14,7 +14,7 @@ export const BudgetAuditor: React.FC<BudgetAuditorProps> = ({ totalCost, budget 
 
     return (
         <div
-            className="absolute top-[88px] right-6 z-[90] transition-all duration-300 ease-in-out"
+            className="absolute top-[88px] left-1/2 -translate-x-1/2 z-20 transition-all duration-300 ease-in-out"
             onMouseEnter={() => setIsExpanded(true)}
             onMouseLeave={() => setIsExpanded(false)}
         >

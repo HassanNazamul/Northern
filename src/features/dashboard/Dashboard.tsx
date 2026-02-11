@@ -18,6 +18,7 @@ import {
   DragOverlayContent,
   AccommodationFormModal,
   ActivityFormModal,
+  DashboardHeader,
 } from './components';
 
 interface DashboardProps {
@@ -144,30 +145,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
         {/* Main Content Area - Flexible Column */}
         <div className="flex flex-col bg-gray-50 relative z-10 min-w-0">
           {/* Top Bar */}
-          <div className="flex items-center justify-between px-6 py-4 bg-white shadow-sm z-30">
-            <div className="flex items-center gap-4">
-              {!sidebarOpen && (
-                <button
-                  onClick={() => dispatch(setSidebarOpen(true))}
-                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <PanelLeftOpen className="h-5 w-5" />
-                </button>
-              )}
-              <h1 className="text-2xl font-bold text-gray-800">
-                {tripState.destination} Itinerary
-              </h1>
-            </div>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={onReset}
-                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium flex items-center gap-2"
-              >
-                <ChevronLeft className="h-4 w-4" />
-                New Trip
-              </button>
-            </div>
-          </div>
+          {/* Top Bar - Refactored into DashboardHeader */}
+          <DashboardHeader
+            destination={tripState.destination}
+            onReset={onReset}
+            sidebarOpen={sidebarOpen}
+            onSidebarToggle={() => dispatch(setSidebarOpen(!sidebarOpen))}
+          />
 
           {/* Canvas Area - Flexible & Contained */}
           <div className="flex-1 relative overflow-hidden">

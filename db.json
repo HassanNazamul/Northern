@@ -3,12 +3,148 @@
     {
       "id": "current",
       "trip_title": "Mock Toronto Adventure",
-      "total_days": 5,
+      "total_days": 3,
       "currency": "CAD",
       "itinerary": [
         {
-          "id": "day-3-mock",
+          "id": "day-1-mock",
           "day": 1,
+          "theme": "Downtown Exploration",
+          "accommodation": {
+            "hotelName": "Fairmont Royal York",
+            "address": "100 Front St W, Toronto, ON",
+            "pricePerNight": 250,
+            "rating": 4.5,
+            "contactNumber": "+1-416-368-2511",
+            "bookingUrl": "https://example.com/booking",
+            "mapLink": "https://maps.google.com/?q=Fairmont+Royal+York+Toronto",
+            "imageGallery": [
+              "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500"
+            ],
+            "amenities": [
+              "WiFi",
+              "Pool",
+              "Gym",
+              "Restaurant"
+            ],
+            "description": "Historic luxury hotel in downtown Toronto"
+          },
+          "activities": [
+            {
+              "id": "activity-1-1",
+              "title": "CN Tower Visit",
+              "description": "Iconic Toronto landmark with stunning city views",
+              "time": "09:00",
+              "durationMinutes": 120,
+              "cost_estimate": 40,
+              "category": "Sightseeing",
+              "location": "301 Front St W, Toronto",
+              "coordinates": {
+                "lat": 43.6426,
+                "lng": -79.3871
+              }
+            },
+            {
+              "id": "activity-1-2",
+              "title": "Ripley's Aquarium",
+              "description": "Explore marine life and underwater tunnels",
+              "time": "12:00",
+              "durationMinutes": 150,
+              "cost_estimate": 35,
+              "category": "Sightseeing",
+              "location": "288 Bremner Blvd, Toronto",
+              "coordinates": {
+                "lat": 43.6424,
+                "lng": -79.386
+              }
+            },
+            {
+              "id": "activity-1-3",
+              "title": "Dinner at St. Lawrence Market",
+              "description": "Famous food market with diverse culinary options",
+              "time": "18:00",
+              "durationMinutes": 90,
+              "cost_estimate": 30,
+              "category": "Food",
+              "location": "93 Front St E, Toronto",
+              "coordinates": {
+                "lat": 43.6487,
+                "lng": -79.3716
+              }
+            }
+          ]
+        },
+        {
+          "id": "day-2-mock",
+          "day": 2,
+          "theme": "Culture & Arts",
+          "accommodation": {
+            "hotelName": "The Gladstone Hotel",
+            "address": "1214 Queen St W, Toronto, ON",
+            "pricePerNight": 180,
+            "rating": 4.2,
+            "contactNumber": "+1-416-531-4635",
+            "bookingUrl": "https://example.com/booking",
+            "mapLink": "https://maps.google.com/?q=Gladstone+Hotel+Toronto",
+            "imageGallery": [
+              "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=500"
+            ],
+            "amenities": [
+              "WiFi",
+              "Art Gallery",
+              "Restaurant",
+              "Bar"
+            ],
+            "description": "Boutique hotel with artistic flair in West Queen West"
+          },
+          "activities": [
+            {
+              "id": "activity-2-1",
+              "title": "Royal Ontario Museum (ROM)",
+              "description": "World-class museum of art, culture, and natural history",
+              "time": "10:00",
+              "durationMinutes": 180,
+              "cost_estimate": 25,
+              "category": "Sightseeing",
+              "location": "100 Queen's Park, Toronto",
+              "coordinates": {
+                "lat": 43.6677,
+                "lng": -79.3948
+              }
+            },
+            {
+              "id": "activity-2-2",
+              "title": "Kensington Market Exploration",
+              "description": "Vibrant multicultural neighborhood with unique shops and cafes",
+              "time": "14:30",
+              "durationMinutes": 120,
+              "cost_estimate": 20,
+              "category": "Relaxation",
+              "location": "Kensington Ave, Toronto",
+              "coordinates": {
+                "lat": 43.6544,
+                "lng": -79.4008
+              }
+            },
+            {
+              "id": "activity-2-3",
+              "title": "Dinner at Chinatown",
+              "description": "Authentic Asian cuisine in Toronto's bustling Chinatown",
+              "time": "19:00",
+              "durationMinutes": 90,
+              "cost_estimate": 25,
+              "category": "Food",
+              "location": "Spadina Ave, Toronto",
+              "coordinates": {
+                "lat": 43.6532,
+                "lng": -79.3983
+              }
+            }
+          ]
+        },
+        {
+          "id": "day-3-mock",
+          "day": 3,
           "theme": "Waterfront & Departure",
           "accommodation": {
             "hotelName": "The Westin Harbour Castle",
@@ -34,7 +170,7 @@
               "id": "activity-3-1",
               "title": "Toronto Islands Ferry & Bike Tour",
               "description": "Scenic island getaway with bike rentals and beaches",
-              "time": "9:00 AM",
+              "time": "09:30",
               "durationMinutes": 240,
               "cost_estimate": 30,
               "category": "Adventure",
@@ -42,33 +178,13 @@
               "coordinates": {
                 "lat": 43.6389,
                 "lng": -79.3752
-              },
-              "travelTimeFromPrev": 0
+              }
             },
-            {
-              "id": "activity-1770794759632",
-              "title": "Lund",
-              "description": "New Activity",
-              "time": "1:30 PM",
-              "durationMinutes": 60,
-              "category": "Sightseeing",
-              "cost_estimate": 0,
-              "location": "TBD",
-              "isDraft": false,
-              "travelTimeFromPrev": 30
-            }
-          ]
-        },
-        {
-          "id": "day-1770794677898",
-          "day": 2,
-          "theme": "New Day",
-          "activities": [
             {
               "id": "activity-3-2",
               "title": "Harbourfront Centre",
               "description": "Cultural center with art galleries and lakefront views",
-              "time": "9:00 AM",
+              "time": "14:30",
               "durationMinutes": 90,
               "cost_estimate": 0,
               "category": "Sightseeing",
@@ -76,28 +192,9 @@
               "coordinates": {
                 "lat": 43.6385,
                 "lng": -79.3817
-              },
-              "travelTimeFromPrev": 0
+              }
             }
           ]
-        },
-        {
-          "id": "day-1770794690567",
-          "day": 3,
-          "theme": "New Day",
-          "activities": []
-        },
-        {
-          "id": "day-1770794688655",
-          "day": 4,
-          "theme": "New Day",
-          "activities": []
-        },
-        {
-          "id": "day-1770794689580",
-          "day": 5,
-          "theme": "New Day",
-          "activities": []
         }
       ],
       "sidebar_suggestions": [
