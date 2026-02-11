@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export const useZoomPan = () => {
     const [zoom, setZoom] = useState(0.85); // Default: slightly zoomed out
@@ -18,12 +18,51 @@ export const useZoomPan = () => {
         setPan(prev => clampPan(prev, newZoom));
     };
 
+    // Keep track of latest state for event listener
+    const stateRef = useRef({ zoom, pan });
+    // Update ref on every render
+    stateRef.current = { zoom, pan };
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const onWheel = (e: WheelEvent) => {
+            // Prevent default browser zoom/scroll behavior
+            e.preventDefault();
+
+            if (e.ctrlKey) {
+                // Zoom logic
+                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                // Use functional update to ensure we rely on latest state if needed, 
+                // but here we used stateRef for reads. 
+                // Let's use the ref values to calculate next state.
+                const currentZoom = stateRef.current.zoom;
+                const newZoom = Math.max(0.4, Math.min(1.5, currentZoom + delta));
+
+                setZoom(newZoom);
+                setPan(prev => clampPan(prev, newZoom));
+            } else {
+                // Pan logic
+                const currentZoom = stateRef.current.zoom;
+                setPan(prev => {
+                    const newPan = { x: prev.x - e.deltaX, y: prev.y - e.deltaY };
+                    return clampPan(newPan, currentZoom);
+                });
+            }
+        };
+
+        // Add non-passive listener to allow preventDefault
+        canvas.addEventListener('wheel', onWheel, { passive: false });
+
+        return () => {
+            canvas.removeEventListener('wheel', onWheel);
+        };
+    }, []);
+
+    // Original handleWheel removed as we use native listener now
     const handleWheel = (e: React.WheelEvent) => {
-        if (e.ctrlKey) {
-            handleZoom(e.deltaY > 0 ? -0.1 : 0.1);
-        } else {
-            setPan(prev => clampPan({ x: prev.x - e.deltaX, y: prev.y - e.deltaY }, zoom));
-        }
+        // No-op or log warning if used
     };
 
     // New handler for drag panning

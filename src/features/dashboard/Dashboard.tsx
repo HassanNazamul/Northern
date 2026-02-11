@@ -61,7 +61,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
     setIsPanning,
     setPan,
     handleZoom,
-    handleWheel,
     handlePan,
     resetView,
   } = useZoomPan();
@@ -185,7 +184,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
               onPanStart={() => setIsPanning(true)}
               onPan={handlePan}
               onPanEnd={() => setIsPanning(false)}
-              onWheel={handleWheel}
               onManualAccommodation={(dayId) => setManualAccommodationDayId(dayId)}
               onAddActivity={(dayId) => {
                 const newActivity: Activity = {

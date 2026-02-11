@@ -11,7 +11,6 @@ interface DashboardCanvasProps {
     pan: { x: number; y: number };
     isPanning: boolean;
     canvasRef: React.RefObject<HTMLDivElement>;
-    onWheel: (e: React.WheelEvent) => void;
     onMouseDown: (e: React.MouseEvent) => void;
     onMouseMove: (e: React.MouseEvent) => void;
     onMouseUp: () => void;
@@ -31,7 +30,6 @@ export const DashboardCanvas: React.FC<DashboardCanvasProps> = ({
     pan,
     isPanning,
     canvasRef,
-    onWheel,
     onMouseDown,
     onMouseMove,
     onMouseUp,
@@ -47,7 +45,6 @@ export const DashboardCanvas: React.FC<DashboardCanvasProps> = ({
         <div
             className="w-full h-full bg-[#F8FAFC] canvas-bg"
             ref={canvasRef}
-            onWheel={onWheel}
             onMouseDown={onMouseDown}
             onMouseMove={onMouseMove}
             onMouseUp={onMouseUp}
