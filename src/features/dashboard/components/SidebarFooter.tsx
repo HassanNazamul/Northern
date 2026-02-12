@@ -10,7 +10,7 @@ export const SidebarFooter: React.FC = () => {
     useClickOutside(containerRef, () => setIsOpen(false));
 
     return (
-        <div ref={containerRef} className="p-4 border-t border-slate-100 bg-white relative">
+        <div ref={containerRef} className="p-2 border-t border-slate-100 bg-white relative">
 
             {/* -- Menu Dropdown -- */}
             {/* Positioned above the footer */}

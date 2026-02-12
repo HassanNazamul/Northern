@@ -115,41 +115,43 @@ export const DayCard: React.FC<DayCardProps> = ({
                 )}
             </div>
 
-            <div
-                ref={setListRef}
-                className="flex-1 overflow-y-auto p-3 custom-scrollbar relative bg-slate-50/20"
-            >
-                <SortableContext
-                    items={dayPlan.activities.map((a) => a.id)}
-                    strategy={verticalListSortingStrategy}
+            <div className="flex-1 relative min-h-0 bg-slate-50/20">
+                <div
+                    ref={setListRef}
+                    className="absolute inset-0 overflow-y-auto p-3 no-scrollbar cancel-pan-zoom"
                 >
-                    {dayPlan.activities.map((activity) => (
-                        <SortableActivityItem
-                            key={activity.id}
-                            activity={activity}
-                            dayId={dayPlan.id}
-                            onClick={() => onSelectActivity(activity)}
-                        />
-                    ))}
-                </SortableContext>
+                    <SortableContext
+                        items={dayPlan.activities.map((a) => a.id)}
+                        strategy={verticalListSortingStrategy}
+                    >
+                        {dayPlan.activities.map((activity) => (
+                            <SortableActivityItem
+                                key={activity.id}
+                                activity={activity}
+                                dayId={dayPlan.id}
+                                onClick={() => onSelectActivity(activity)}
+                            />
+                        ))}
+                    </SortableContext>
 
-                {dayPlan.activities.length === 0 && (
-                    <div className="absolute inset-0 m-3 flex flex-col items-center justify-center text-slate-300 border-2 border-dashed border-slate-100 rounded-xl pointer-events-none">
-                        <span className="text-xs font-medium">No activities planned</span>
-                    </div>
-                )}
+                    {dayPlan.activities.length === 0 && (
+                        <div className="absolute inset-0 m-3 flex flex-col items-center justify-center text-slate-300 border-2 border-dashed border-slate-100 rounded-xl pointer-events-none">
+                            <span className="text-xs font-medium">No activities planned</span>
+                        </div>
+                    )}
 
-                {/* -- Add Activity Button -- */}
-                <button
-                    onClick={() => onAddActivity && onAddActivity(dayPlan.id)}
-                    className="w-full mt-3 py-3 px-4 flex items-center justify-center gap-2
-                               rounded-xl border border-dashed border-slate-200 dark:border-slate-700
-                               text-slate-400 hover:text-blue-500 hover:border-blue-500/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/10
-                               transition-all duration-200 group opacity-70 hover:opacity-100 mb-4"
-                >
-                    <Plus className="w-4 h-4" />
-                    <span className="text-sm font-medium">Add Activity</span>
-                </button>
+                    {/* -- Add Activity Button -- */}
+                    <button
+                        onClick={() => onAddActivity && onAddActivity(dayPlan.id)}
+                        className="w-full mt-3 py-3 px-4 flex items-center justify-center gap-2
+                                   rounded-xl border border-dashed border-slate-200 dark:border-slate-700
+                                   text-slate-400 hover:text-blue-500 hover:border-blue-500/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/10
+                                   transition-all duration-200 group opacity-70 hover:opacity-100 mb-4"
+                    >
+                        <Plus className="w-4 h-4" />
+                        <span className="text-sm font-medium">Add Activity</span>
+                    </button>
+                </div>
             </div>
 
             <div className="p-3 bg-slate-50 border-t border-slate-100 shrink-0 flex items-center justify-between">

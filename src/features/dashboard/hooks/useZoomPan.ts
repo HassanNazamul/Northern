@@ -28,6 +28,36 @@ export const useZoomPan = () => {
         if (!canvas) return;
 
         const onWheel = (e: WheelEvent) => {
+            const target = e.target as HTMLElement;
+            const scrollableParent = target.closest('.cancel-pan-zoom') as HTMLElement;
+
+            if (scrollableParent) {
+                // Horizontal Scroll Passthrough
+                // If the user is scrolling horizontally (Shift+Wheel or gesture), let it pass to canvas pan
+                if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+                    // Prevent default to stop browser back/forward, but execute PAN logic below
+                    e.preventDefault();
+                }
+                // Vertical Scroll Logic
+                else {
+                    const { scrollTop, scrollHeight, clientHeight } = scrollableParent;
+                    const isScrollingDown = e.deltaY > 0;
+                    const isScrollingUp = e.deltaY < 0;
+
+                    // Check if scrollable
+                    const canScrollUp = scrollTop > 0;
+                    const canScrollDown = scrollTop + clientHeight < scrollHeight - 1; // -1 for rounding tolerance
+
+                    // If we can scroll in the requested direction, let native scroll happen
+                    if ((isScrollingDown && canScrollDown) || (isScrollingUp && canScrollUp)) {
+                        return;
+                    }
+
+                    // Boundary reached: blocked -> Chain to canvas zoom/pan
+                    // Fallthrough to preventDefault + ZoomPan logic
+                }
+            }
+
             // Prevent default browser zoom/scroll behavior
             e.preventDefault();
 

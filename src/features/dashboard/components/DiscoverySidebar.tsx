@@ -34,8 +34,8 @@ export const DiscoverySidebar: React.FC<DiscoverySidebarProps> = ({
             "transition-opacity duration-500 ease-in-out",
             isOpen ? "opacity-100" : "opacity-0"
         )}>
-            <div className="p-6 border-b border-slate-100 bg-slate-50/50">
-                <div className="flex items-center justify-between mb-4">
+            <div className="px-6 py-6 border-b border-slate-100 bg-slate-50/50">
+                <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-slate-900">
                         <div className="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center text-white">
                             <Sparkles className="w-4 h-4" />
