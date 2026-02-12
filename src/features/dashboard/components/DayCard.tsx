@@ -118,7 +118,7 @@ export const DayCard: React.FC<DayCardProps> = ({
             <div className="flex-1 relative min-h-0 bg-slate-50/20">
                 <div
                     ref={setListRef}
-                    className="absolute inset-0 overflow-y-auto p-3 no-scrollbar cancel-pan-zoom"
+                    className="absolute inset-0 overflow-y-auto p-3 no-scrollbar cancel-pan-zoom overscroll-y-none"
                 >
                     <SortableContext
                         items={dayPlan.activities.map((a) => a.id)}

@@ -7,76 +7,8 @@
       "currency": "CAD",
       "itinerary": [
         {
-          "id": "day-2-mock",
-          "day": 1,
-          "theme": "Culture & Arts",
-          "accommodation": {
-            "hotelName": "The Gladstone Hotel",
-            "address": "1214 Queen St W, Toronto, ON",
-            "pricePerNight": 180,
-            "rating": 4.2,
-            "contactNumber": "+1-416-531-4635",
-            "bookingUrl": "https://example.com/booking",
-            "mapLink": "https://maps.google.com/?q=Gladstone+Hotel+Toronto",
-            "imageGallery": [
-              "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=500"
-            ],
-            "amenities": [
-              "WiFi",
-              "Art Gallery",
-              "Restaurant",
-              "Bar"
-            ],
-            "description": "Boutique hotel with artistic flair in West Queen West"
-          },
-          "activities": [
-            {
-              "id": "activity-2-1",
-              "title": "Royal Ontario Museum (ROM)",
-              "description": "World-class museum of art, culture, and natural history",
-              "time": "10:00",
-              "durationMinutes": 180,
-              "cost_estimate": 25,
-              "category": "Sightseeing",
-              "location": "100 Queen's Park, Toronto",
-              "coordinates": {
-                "lat": 43.6677,
-                "lng": -79.3948
-              }
-            },
-            {
-              "id": "activity-2-2",
-              "title": "Kensington Market Exploration",
-              "description": "Vibrant multicultural neighborhood with unique shops and cafes",
-              "time": "14:30",
-              "durationMinutes": 120,
-              "cost_estimate": 20,
-              "category": "Relaxation",
-              "location": "Kensington Ave, Toronto",
-              "coordinates": {
-                "lat": 43.6544,
-                "lng": -79.4008
-              }
-            },
-            {
-              "id": "activity-2-3",
-              "title": "Dinner at Chinatown",
-              "description": "Authentic Asian cuisine in Toronto's bustling Chinatown",
-              "time": "19:00",
-              "durationMinutes": 90,
-              "cost_estimate": 25,
-              "category": "Food",
-              "location": "Spadina Ave, Toronto",
-              "coordinates": {
-                "lat": 43.6532,
-                "lng": -79.3983
-              }
-            }
-          ]
-        },
-        {
           "id": "day-1-mock",
-          "day": 2,
+          "day": 1,
           "theme": "Downtown Exploration",
           "accommodation": {
             "hotelName": "Fairmont Royal York",
@@ -99,10 +31,59 @@
           },
           "activities": [
             {
+              "id": "activity-1770922559274",
+              "title": "naz",
+              "description": "New Activity",
+              "time": "9:00 AM",
+              "durationMinutes": 60,
+              "category": "Sightseeing",
+              "cost_estimate": 0,
+              "location": "TBD",
+              "isDraft": false,
+              "travelTimeFromPrev": 0
+            },
+            {
+              "id": "sug-activity-1-1770924108312",
+              "title": "Casa Loma",
+              "description": "Gothic Revival castle with beautiful gardens.",
+              "location": "1 Austin Terrace, Toronto",
+              "time": "10:30 AM",
+              "cost_estimate": 30,
+              "category": "Sightseeing",
+              "durationMinutes": 120,
+              "travelTimeFromPrev": 30
+            }
+          ]
+        },
+        {
+          "id": "day-2-mock",
+          "day": 2,
+          "theme": "Culture & Arts",
+          "accommodation": {
+            "hotelName": "The Gladstone Hotel",
+            "address": "1214 Queen St W, Toronto, ON",
+            "pricePerNight": 180,
+            "rating": 4.2,
+            "contactNumber": "+1-416-531-4635",
+            "bookingUrl": "https://example.com/booking",
+            "mapLink": "https://maps.google.com/?q=Gladstone+Hotel+Toronto",
+            "imageGallery": [
+              "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=500"
+            ],
+            "amenities": [
+              "WiFi",
+              "Art Gallery",
+              "Restaurant",
+              "Bar"
+            ],
+            "description": "Boutique hotel with artistic flair in West Queen West"
+          },
+          "activities": [
+            {
               "id": "activity-1-1",
               "title": "CN Tower Visit",
               "description": "Iconic Toronto landmark with stunning city views",
-              "time": "09:00",
+              "time": "9:00 AM",
               "durationMinutes": 120,
               "cost_estimate": 40,
               "category": "Sightseeing",
@@ -110,13 +91,29 @@
               "coordinates": {
                 "lat": 43.6426,
                 "lng": -79.3871
-              }
+              },
+              "travelTimeFromPrev": 0
+            },
+            {
+              "id": "activity-2-1",
+              "title": "Royal Ontario Museum (ROM)",
+              "description": "World-class museum of art, culture, and natural history",
+              "time": "11:21 AM",
+              "durationMinutes": 180,
+              "cost_estimate": 25,
+              "category": "Sightseeing",
+              "location": "100 Queen's Park, Toronto",
+              "coordinates": {
+                "lat": 43.6677,
+                "lng": -79.3948
+              },
+              "travelTimeFromPrev": 21
             },
             {
               "id": "activity-1-2",
               "title": "Ripley's Aquarium",
               "description": "Explore marine life and underwater tunnels",
-              "time": "12:00",
+              "time": "2:42 PM",
               "durationMinutes": 150,
               "cost_estimate": 35,
               "category": "Sightseeing",
@@ -124,13 +121,44 @@
               "coordinates": {
                 "lat": 43.6424,
                 "lng": -79.386
-              }
+              },
+              "travelTimeFromPrev": 21
+            },
+            {
+              "id": "activity-2-2",
+              "title": "Kensington Market Exploration",
+              "description": "Vibrant multicultural neighborhood with unique shops and cafes",
+              "time": "5:31 PM",
+              "durationMinutes": 120,
+              "cost_estimate": 20,
+              "category": "Relaxation",
+              "location": "Kensington Ave, Toronto",
+              "coordinates": {
+                "lat": 43.6544,
+                "lng": -79.4008
+              },
+              "travelTimeFromPrev": 19
+            },
+            {
+              "id": "activity-2-3",
+              "title": "Dinner at Chinatown",
+              "description": "Authentic Asian cuisine in Toronto's bustling Chinatown",
+              "time": "7:47 PM",
+              "durationMinutes": 90,
+              "cost_estimate": 25,
+              "category": "Food",
+              "location": "Spadina Ave, Toronto",
+              "coordinates": {
+                "lat": 43.6532,
+                "lng": -79.3983
+              },
+              "travelTimeFromPrev": 16
             },
             {
               "id": "activity-1-3",
               "title": "Dinner at St. Lawrence Market",
               "description": "Famous food market with diverse culinary options",
-              "time": "18:00",
+              "time": "9:37 PM",
               "durationMinutes": 90,
               "cost_estimate": 30,
               "category": "Food",
@@ -138,7 +166,8 @@
               "coordinates": {
                 "lat": 43.6487,
                 "lng": -79.3716
-              }
+              },
+              "travelTimeFromPrev": 20
             }
           ]
         },
