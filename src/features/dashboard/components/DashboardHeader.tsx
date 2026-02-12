@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { useClickOutside } from '../../../hooks/useClickOutside';
 import {
     ChevronLeft,
     PanelLeftOpen,
@@ -6,7 +7,8 @@ import {
     UserPlus,
     Save,
     Globe,
-    MoreVertical
+    MoreVertical,
+    Layers
 } from 'lucide-react';
 import { CollaboratorGroup } from './CollaboratorGroup';
 
@@ -24,6 +26,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     onSidebarToggle,
 }) => {
     const [showMoreMenu, setShowMoreMenu] = useState(false);
+    const optionsRef = useRef<HTMLDivElement>(null);
+
+    useClickOutside(optionsRef, () => setShowMoreMenu(false));
 
     return (
         <div className="flex items-center justify-between px-6 py-4 bg-white/60 backdrop-blur-md border-b border-white/20 relative z-30 sticky top-0">
@@ -81,7 +86,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
 
                     {/* More Actions Dropdown */}
-                    <div className="relative">
+                    <div ref={optionsRef} className="relative">
                         <button
                             onClick={() => setShowMoreMenu(!showMoreMenu)}
                             className="p-2 text-gray-700 bg-white/40 border border-white/50 rounded-lg hover:bg-white/60 hover:shadow-sm transition-all"
@@ -90,11 +95,14 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                         </button>
 
                         {showMoreMenu && (
-                            <div className="absolute right-0 top-full mt-2 w-48 bg-white/90 backdrop-blur-xl rounded-xl shadow-xl border border-white/20 py-1 z-50 animate-in fade-in zoom-in-95 duration-200 ring-1 ring-black/5">
-                                <button className="w-full text-left px-4 py-2.5 text-sm text-gray-600 hover:bg-black/5 flex items-center gap-2 transition-colors">
+                            <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-50 animate-in fade-in zoom-in-95 duration-200">
+                                <button className="w-full text-left px-4 py-2.5 text-sm text-gray-600 hover:bg-slate-50 flex items-center gap-2 transition-colors">
                                     <Globe className="h-4 w-4" /> Publish
                                 </button>
-                                <button className="w-full text-left px-4 py-2.5 text-sm text-gray-600 hover:bg-black/5 flex items-center gap-2 transition-colors">
+                                <button className="w-full text-left px-4 py-2.5 text-sm text-gray-600 hover:bg-slate-50 flex items-center gap-2 transition-colors">
+                                    <Layers className="h-4 w-4" /> Add to Calendar
+                                </button>
+                                <button className="w-full text-left px-4 py-2.5 text-sm text-gray-600 hover:bg-slate-50 flex items-center gap-2 transition-colors">
                                     <Mail className="h-4 w-4" /> Share via Email
                                 </button>
                                 <div className="my-1 border-t border-gray-100/50"></div>

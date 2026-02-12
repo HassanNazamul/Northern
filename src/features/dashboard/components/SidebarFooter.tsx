@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { User, MoreVertical, LogOut, Settings, Moon, ChevronRight, Mail, Phone, ChevronUp } from 'lucide-react';
 import { cn } from '@utils';
+import { useClickOutside } from '../../../hooks/useClickOutside';
 
 export const SidebarFooter: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useClickOutside(containerRef, () => setIsOpen(false));
 
     return (
-        <div className="p-4 border-t border-slate-100 bg-white relative">
+        <div ref={containerRef} className="p-4 border-t border-slate-100 bg-white relative">
 
             {/* -- Menu Dropdown -- */}
             {/* Positioned above the footer */}
