@@ -20,6 +20,11 @@ interface DayCardProps {
         attributes: any;
         listeners: any;
     };
+    // Smart Restore Selection
+    isSelected?: boolean;
+    onSelectDay?: (dayId: string) => void;
+    trashBinOpen?: boolean;
+    onUpdateDay?: (dayId: string, updates: Partial<DayPlan>) => void;
 }
 
 export const DayCard: React.FC<DayCardProps> = ({
@@ -31,8 +36,39 @@ export const DayCard: React.FC<DayCardProps> = ({
     onAddActivity,
     onDeleteDay,
     activeDragType,
-    dragHandleProps
+    dragHandleProps,
+    isSelected = false,
+    onSelectDay,
+    trashBinOpen = false,
+    onUpdateDay
 }) => {
+    // -- Local Editing State --
+    const [isEditing, setIsEditing] = React.useState(false);
+    const [themeText, setThemeText] = React.useState(dayPlan.theme);
+    const inputRef = React.useRef<HTMLInputElement>(null);
+
+    React.useEffect(() => {
+        if (isEditing && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [isEditing]);
+
+    const handleSave = () => {
+        setIsEditing(false);
+        if (themeText !== dayPlan.theme && onUpdateDay) {
+            onUpdateDay(dayPlan.id, { theme: themeText });
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            handleSave();
+        } else if (e.key === 'Escape') {
+            setIsEditing(false);
+            setThemeText(dayPlan.theme);
+        }
+    };
+
     // -- Droppable Zones --
     // 1. Hotel Zone: Dropping an accommodation here updates the day's stay
     const { setNodeRef: setHotelRef, isOver: isHotelOver } = useDroppable({
@@ -47,15 +83,45 @@ export const DayCard: React.FC<DayCardProps> = ({
     });
 
     return (
-        <div className={cn(
-            "w-[320px] bg-white rounded-2xl shadow-xl border-2 flex flex-col h-[700px] transition-all overflow-hidden relative",
-            (isListOver && activeDragType === DRAG_TYPES.SIDEBAR_ACTIVITY) ? "border-blue-500 ring-4 ring-blue-500/10" : "border-slate-100"
-        )}>
+        <div
+            onClick={() => {
+                if (trashBinOpen && onSelectDay) {
+                    onSelectDay(dayPlan.id);
+                }
+            }}
+            className={cn(
+                "w-[320px] bg-white rounded-2xl shadow-xl border-2 flex flex-col h-[700px] transition-all overflow-hidden relative",
+                (isListOver && activeDragType === DRAG_TYPES.SIDEBAR_ACTIVITY) ? "border-blue-500 ring-4 ring-blue-500/10" : "border-slate-100",
+                // Selection Styling for Smart Restore
+                (trashBinOpen && isSelected) && "border-blue-500 ring-4 ring-blue-500/20 scale-[1.02] shadow-2xl z-10 cursor-pointer",
+                (trashBinOpen && !isSelected) && "opacity-60 grayscale-[0.5] scale-95 hover:opacity-100 hover:grayscale-0 hover:scale-100 cursor-pointer"
+            )}>
             <div className="p-4 bg-gradient-to-r from-slate-900 to-slate-800 text-white shrink-0">
                 <div className="flex justify-between items-start">
-                    <div>
-                        <h2 className="text-lg font-bold">Day {dayPlan.day}</h2>
-                        <p className="text-xs text-slate-400 font-medium opacity-80">{dayPlan.theme}</p>
+                    <div className="flex-1 mr-2">
+                        <h2 className="text-lg font-bold select-none">Day {dayPlan.day}</h2>
+                        {isEditing ? (
+                            <input
+                                ref={inputRef}
+                                value={themeText}
+                                onChange={(e) => setThemeText(e.target.value)}
+                                onBlur={handleSave}
+                                onKeyDown={handleKeyDown}
+                                className="text-xs text-slate-800 font-medium w-full bg-white/90 rounded px-1 py-0.5 outline-none border border-blue-400"
+                                onClick={(e) => e.stopPropagation()}
+                            />
+                        ) : (
+                            <p
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsEditing(true);
+                                }}
+                                className="text-xs text-slate-400 font-medium opacity-80 hover:opacity-100 hover:text-white cursor-pointer transition-colors truncate border border-transparent hover:border-white/20 rounded px-1 -ml-1"
+                                title="Click to rename"
+                            >
+                                {dayPlan.theme || "New Day"}
+                            </p>
+                        )}
                     </div>
                     {dragHandleProps && (
                         <div

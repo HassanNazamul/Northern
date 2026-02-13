@@ -15,6 +15,12 @@ interface SortableDayCardProps {
     onAddActivity?: (dayId: string) => void;
     onDeleteDay?: (dayId: string) => void;
     activeDragType: string | null;
+
+    // Smart Restore Props
+    isSelected?: boolean;
+    onSelectDay?: (dayId: string) => void;
+    trashBinOpen?: boolean;
+    onUpdateDay?: (dayId: string, updates: Partial<DayPlan>) => void;
 }
 
 export const SortableDayCard: React.FC<SortableDayCardProps> = (props) => {
@@ -56,6 +62,10 @@ export const SortableDayCard: React.FC<SortableDayCardProps> = (props) => {
                 onAddActivity={props.onAddActivity}
                 onDeleteDay={props.onDeleteDay}
                 dragHandleProps={{ attributes, listeners }}
+                isSelected={props.isSelected}
+                onSelectDay={props.onSelectDay}
+                trashBinOpen={props.trashBinOpen}
+                onUpdateDay={props.onUpdateDay}
             />
             {/* Swap Indicator Overlay */}
             {isOver && !isDragging && (

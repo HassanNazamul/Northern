@@ -3,6 +3,7 @@ import { Sparkles, PanelLeftClose, Compass, Utensils, Bed, Music, RefreshCcw } f
 import { cn } from '@utils';
 import { SidebarDraggableItem } from './SidebarDraggableItem';
 import { SidebarFooter } from './SidebarFooter';
+import { FilterBar } from './FilterBar';
 
 interface DiscoverySidebarProps {
     isOpen: boolean;
@@ -11,6 +12,12 @@ interface DiscoverySidebarProps {
     setActiveTab: (tab: 'culinary' | 'exploration' | 'stay' | 'events') => void;
     discoveryItems: any[];
     isLoading: boolean;
+    // New Filter Props
+    availableFilters?: string[];
+    activeFilters?: string[];
+    isSearchMode?: boolean;
+    onToggleFilter?: (filter: string) => void;
+    onRefresh?: () => void;
 }
 
 export const DiscoverySidebar: React.FC<DiscoverySidebarProps> = ({
@@ -19,7 +26,12 @@ export const DiscoverySidebar: React.FC<DiscoverySidebarProps> = ({
     activeTab,
     setActiveTab,
     discoveryItems,
-    isLoading
+    isLoading,
+    availableFilters = [],
+    activeFilters = [],
+    isSearchMode = true,
+    onToggleFilter = () => { },
+    onRefresh = () => { }
 }) => {
     const tabs = [
         { id: 'exploration', label: 'Activities', icon: Compass },
@@ -63,6 +75,15 @@ export const DiscoverySidebar: React.FC<DiscoverySidebarProps> = ({
                     </button>
                 ))}
             </div>
+
+            {/* -- Smart Filters -- */}
+            <FilterBar
+                filters={availableFilters}
+                activeFilters={activeFilters}
+                isSearchMode={isSearchMode}
+                onToggleFilter={onToggleFilter}
+                onRefresh={onRefresh}
+            />
 
             {/* -- Draggable Items List -- */}
             {/* Renders a list of items that can be dragged onto the canvas */}

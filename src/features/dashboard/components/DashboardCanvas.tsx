@@ -22,6 +22,12 @@ interface DashboardCanvasProps {
     onAddActivity: (dayId: string) => void;
     onDeleteDay: (dayId: string) => void;
     activeDragType: string | null;
+
+    // Smart Restore Props
+    selectedDayId: string | null;
+    onSelectDay: (dayId: string) => void;
+    trashBinOpen: boolean;
+    onUpdateDay: (dayId: string, updates: Partial<DayPlan>) => void;
 }
 
 export const DashboardCanvas: React.FC<DashboardCanvasProps> = ({
@@ -40,6 +46,10 @@ export const DashboardCanvas: React.FC<DashboardCanvasProps> = ({
     onAddActivity,
     onDeleteDay,
     activeDragType,
+    selectedDayId,
+    onSelectDay,
+    trashBinOpen,
+    onUpdateDay
 }) => {
     return (
         <div
@@ -74,6 +84,10 @@ export const DashboardCanvas: React.FC<DashboardCanvasProps> = ({
                                 onAddActivity={onAddActivity}
                                 onDeleteDay={onDeleteDay}
                                 activeDragType={activeDragType}
+                                isSelected={selectedDayId === day.id}
+                                onSelectDay={onSelectDay}
+                                trashBinOpen={trashBinOpen}
+                                onUpdateDay={onUpdateDay}
                             />
                         ))}
 

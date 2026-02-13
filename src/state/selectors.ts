@@ -26,3 +26,4 @@ export const selectDiscoveryTab = (state: RootState) => state.discovery.activeTa
 export const selectDiscoveryItems = (state: RootState) => state.discovery.items;
 export const selectDiscoveryLoading = (state: RootState) => state.discovery.loading;
 export const selectDiscoveryError = (state: RootState) => state.discovery.error;
+export const selectDiscoveryFilters = (state: RootState) => state.discovery.activeFilters;

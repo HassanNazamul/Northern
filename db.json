@@ -3,7 +3,7 @@
     {
       "id": "current",
       "trip_title": "Mock Toronto Adventure",
-      "total_days": 3,
+      "total_days": 2,
       "currency": "CAD",
       "itinerary": [
         {
@@ -19,7 +19,9 @@
             "bookingUrl": "https://example.com/booking",
             "mapLink": "https://maps.google.com/?q=Fairmont+Royal+York+Toronto",
             "imageGallery": [
-              "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500"
+              "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1000",
+              "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1000",
+              "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1000"
             ],
             "amenities": [
               "WiFi",
@@ -31,23 +33,56 @@
           },
           "activities": [
             {
+              "id": "sug-activity-1-1770968363197",
+              "title": "Casa Loma",
+              "description": "Gothic Revival castle with beautiful gardens.",
+              "location": "1 Austin Terrace, Toronto",
+              "time": "9:00 AM",
+              "cost_estimate": 30,
+              "category": "Sightseeing",
+              "durationMinutes": 120,
+              "travelTimeFromPrev": 0
+            },
+            {
+              "id": "sug-activity-2-1770960085941",
+              "title": "High Park",
+              "description": "Large urban park perfect for outdoor activities & cherry blossoms.",
+              "location": "1873 Bloor St W, Toronto",
+              "time": "11:30 AM",
+              "cost_estimate": 0,
+              "category": "Adventure",
+              "durationMinutes": 180,
+              "travelTimeFromPrev": 30
+            },
+            {
               "id": "activity-1770922559274",
               "title": "naz",
               "description": "New Activity",
-              "time": "9:00 AM",
+              "time": "3:00 PM",
               "durationMinutes": 60,
               "category": "Sightseeing",
               "cost_estimate": 0,
               "location": "TBD",
               "isDraft": false,
-              "travelTimeFromPrev": 0
+              "travelTimeFromPrev": 30
             },
             {
-              "id": "sug-activity-1-1770924108312",
+              "id": "sug-food-2-1770960474455",
+              "title": "Pai Northern Thai Kitchen",
+              "description": "Bustling spot for authentic Northern Thai dishes.",
+              "location": "18 Duncan St, Toronto",
+              "time": "4:30 PM",
+              "cost_estimate": 40,
+              "category": "Food",
+              "durationMinutes": 90,
+              "travelTimeFromPrev": 30
+            },
+            {
+              "id": "sug-activity-1-1770961747108",
               "title": "Casa Loma",
               "description": "Gothic Revival castle with beautiful gardens.",
               "location": "1 Austin Terrace, Toronto",
-              "time": "10:30 AM",
+              "time": "6:30 PM",
               "cost_estimate": 30,
               "category": "Sightseeing",
               "durationMinutes": 120,
@@ -56,174 +91,28 @@
           ]
         },
         {
-          "id": "day-2-mock",
+          "id": "day-1770965970647",
           "day": 2,
-          "theme": "Culture & Arts",
+          "theme": "New Day",
+          "activities": [],
           "accommodation": {
-            "hotelName": "The Gladstone Hotel",
-            "address": "1214 Queen St W, Toronto, ON",
-            "pricePerNight": 180,
-            "rating": 4.2,
-            "contactNumber": "+1-416-531-4635",
-            "bookingUrl": "https://example.com/booking",
-            "mapLink": "https://maps.google.com/?q=Gladstone+Hotel+Toronto",
+            "id": "sug-stay-1",
+            "hotelName": "The Ritz-Carlton",
+            "description": "Luxury hotel with a view of the CN Tower.",
+            "rating": 4.8,
+            "pricePerNight": 600,
+            "address": "181 Wellington St W, Toronto",
+            "category": "Hotel",
             "imageGallery": [
-              "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=500"
+              "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500",
+              "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1000"
             ],
             "amenities": [
-              "WiFi",
-              "Art Gallery",
-              "Restaurant",
-              "Bar"
-            ],
-            "description": "Boutique hotel with artistic flair in West Queen West"
-          },
-          "activities": [
-            {
-              "id": "activity-1-1",
-              "title": "CN Tower Visit",
-              "description": "Iconic Toronto landmark with stunning city views",
-              "time": "9:00 AM",
-              "durationMinutes": 120,
-              "cost_estimate": 40,
-              "category": "Sightseeing",
-              "location": "301 Front St W, Toronto",
-              "coordinates": {
-                "lat": 43.6426,
-                "lng": -79.3871
-              },
-              "travelTimeFromPrev": 0
-            },
-            {
-              "id": "activity-2-1",
-              "title": "Royal Ontario Museum (ROM)",
-              "description": "World-class museum of art, culture, and natural history",
-              "time": "11:21 AM",
-              "durationMinutes": 180,
-              "cost_estimate": 25,
-              "category": "Sightseeing",
-              "location": "100 Queen's Park, Toronto",
-              "coordinates": {
-                "lat": 43.6677,
-                "lng": -79.3948
-              },
-              "travelTimeFromPrev": 21
-            },
-            {
-              "id": "activity-1-2",
-              "title": "Ripley's Aquarium",
-              "description": "Explore marine life and underwater tunnels",
-              "time": "2:42 PM",
-              "durationMinutes": 150,
-              "cost_estimate": 35,
-              "category": "Sightseeing",
-              "location": "288 Bremner Blvd, Toronto",
-              "coordinates": {
-                "lat": 43.6424,
-                "lng": -79.386
-              },
-              "travelTimeFromPrev": 21
-            },
-            {
-              "id": "activity-2-2",
-              "title": "Kensington Market Exploration",
-              "description": "Vibrant multicultural neighborhood with unique shops and cafes",
-              "time": "5:31 PM",
-              "durationMinutes": 120,
-              "cost_estimate": 20,
-              "category": "Relaxation",
-              "location": "Kensington Ave, Toronto",
-              "coordinates": {
-                "lat": 43.6544,
-                "lng": -79.4008
-              },
-              "travelTimeFromPrev": 19
-            },
-            {
-              "id": "activity-2-3",
-              "title": "Dinner at Chinatown",
-              "description": "Authentic Asian cuisine in Toronto's bustling Chinatown",
-              "time": "7:47 PM",
-              "durationMinutes": 90,
-              "cost_estimate": 25,
-              "category": "Food",
-              "location": "Spadina Ave, Toronto",
-              "coordinates": {
-                "lat": 43.6532,
-                "lng": -79.3983
-              },
-              "travelTimeFromPrev": 16
-            },
-            {
-              "id": "activity-1-3",
-              "title": "Dinner at St. Lawrence Market",
-              "description": "Famous food market with diverse culinary options",
-              "time": "9:37 PM",
-              "durationMinutes": 90,
-              "cost_estimate": 30,
-              "category": "Food",
-              "location": "93 Front St E, Toronto",
-              "coordinates": {
-                "lat": 43.6487,
-                "lng": -79.3716
-              },
-              "travelTimeFromPrev": 20
-            }
-          ]
-        },
-        {
-          "id": "day-3-mock",
-          "day": 3,
-          "theme": "Waterfront & Departure",
-          "accommodation": {
-            "hotelName": "The Westin Harbour Castle",
-            "address": "1 Harbour Square, Toronto, ON",
-            "pricePerNight": 220,
-            "rating": 4.3,
-            "contactNumber": "+1-416-869-1600",
-            "bookingUrl": "https://example.com/booking",
-            "mapLink": "https://maps.google.com/?q=Westin+Harbour+Castle+Toronto",
-            "imageGallery": [
-              "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=500"
-            ],
-            "amenities": [
-              "WiFi",
-              "Pool",
               "Spa",
-              "Lake View"
-            ],
-            "description": "Waterfront hotel with stunning lake views"
-          },
-          "activities": [
-            {
-              "id": "activity-3-1",
-              "title": "Toronto Islands Ferry & Bike Tour",
-              "description": "Scenic island getaway with bike rentals and beaches",
-              "time": "09:30",
-              "durationMinutes": 240,
-              "cost_estimate": 30,
-              "category": "Adventure",
-              "location": "Jack Layton Ferry Terminal",
-              "coordinates": {
-                "lat": 43.6389,
-                "lng": -79.3752
-              }
-            },
-            {
-              "id": "activity-3-2",
-              "title": "Harbourfront Centre",
-              "description": "Cultural center with art galleries and lakefront views",
-              "time": "14:30",
-              "durationMinutes": 90,
-              "cost_estimate": 0,
-              "category": "Sightseeing",
-              "location": "235 Queens Quay W, Toronto",
-              "coordinates": {
-                "lat": 43.6385,
-                "lng": -79.3817
-              }
-            }
-          ]
+              "Pool",
+              "Luxury Dining"
+            ]
+          }
         }
       ],
       "sidebar_suggestions": [
@@ -262,7 +151,12 @@
       "category": "Food",
       "cost_estimate": 150,
       "location": "163 Spadina Ave, Toronto",
-      "durationMinutes": 120
+      "durationMinutes": 120,
+      "tags": [
+        "Fine Dining",
+        "Romantic",
+        "French"
+      ]
     },
     {
       "id": "sug-food-2",
@@ -271,7 +165,12 @@
       "category": "Food",
       "cost_estimate": 40,
       "location": "18 Duncan St, Toronto",
-      "durationMinutes": 90
+      "durationMinutes": 90,
+      "tags": [
+        "Local Favorites",
+        "Spicy",
+        "Casual"
+      ]
     },
     {
       "id": "sug-food-3",
@@ -280,7 +179,12 @@
       "category": "Drink",
       "cost_estimate": 10,
       "location": "Various Locations",
-      "durationMinutes": 30
+      "durationMinutes": 30,
+      "tags": [
+        "Budget",
+        "Iconic",
+        "Quick"
+      ]
     },
     {
       "id": "sug-activity-1",
@@ -289,7 +193,12 @@
       "category": "Sightseeing",
       "cost_estimate": 30,
       "location": "1 Austin Terrace, Toronto",
-      "durationMinutes": 120
+      "durationMinutes": 120,
+      "tags": [
+        "History",
+        "Architecture",
+        "Garden"
+      ]
     },
     {
       "id": "sug-activity-2",
@@ -298,7 +207,12 @@
       "category": "Adventure",
       "cost_estimate": 0,
       "location": "1873 Bloor St W, Toronto",
-      "durationMinutes": 180
+      "durationMinutes": 180,
+      "tags": [
+        "Nature",
+        "Outdoors",
+        "Free"
+      ]
     },
     {
       "id": "sug-activity-3",
@@ -307,7 +221,12 @@
       "category": "Relaxation",
       "cost_estimate": 0,
       "location": "Toronto",
-      "durationMinutes": 120
+      "durationMinutes": 120,
+      "tags": [
+        "Shopping",
+        "History",
+        "Walkable"
+      ]
     },
     {
       "id": "sug-stay-1",
@@ -324,6 +243,11 @@
         "Spa",
         "Pool",
         "Luxury Dining"
+      ],
+      "tags": [
+        "Luxury",
+        "Spa",
+        "Central"
       ]
     },
     {
@@ -340,6 +264,11 @@
       "amenities": [
         "Rooftop Bar",
         "Live Music"
+      ],
+      "tags": [
+        "Boutique",
+        "Trendy",
+        "Nightlife"
       ]
     },
     {
@@ -349,7 +278,12 @@
       "category": "Festival",
       "cost_estimate": 50,
       "location": "TIFF Bell Lightbox",
-      "durationMinutes": 180
+      "durationMinutes": 180,
+      "tags": [
+        "Culture",
+        "Cinema",
+        "Social"
+      ]
     },
     {
       "id": "sug-event-2",
@@ -358,7 +292,12 @@
       "category": "Event",
       "cost_estimate": 20,
       "location": "194 Queen St W, Toronto",
-      "durationMinutes": 120
+      "durationMinutes": 120,
+      "tags": [
+        "Music",
+        "Nightlife",
+        "Live"
+      ]
     }
   ]
 }

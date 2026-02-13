@@ -7,7 +7,7 @@ import { ChatBot } from '@features/chat';
 import { getAccommodationSuggestion } from '@services';
 import { useDragAndDrop, useZoomPan, useDiscovery } from './hooks';
 import { useAppSelector, useAppDispatch, selectItinerary, selectTripState, selectSidebarOpen, selectSelectedActivity, selectSelectedAccommodation } from '@state';
-import { setSidebarOpen, selectActivity, selectAccommodation, removeAccommodation, removeActivity, addActivity, setAccommodation as setAccommodationAction, persistItinerary, deleteDay } from '@state/slices/dashboardSlice';
+import { setSidebarOpen, selectActivity, selectAccommodation, removeAccommodation, removeActivity, addActivity, setAccommodation as setAccommodationAction, persistItinerary, deleteDay, selectDay, updateDay } from '@state/slices/dashboardSlice';
 import {
   DiscoverySidebar,
   DashboardCanvas,
@@ -20,6 +20,7 @@ import {
   AccommodationFormModal,
   ActivityFormModal,
   DashboardHeader,
+  TrashBin
 } from './components';
 
 interface DashboardProps {
@@ -34,7 +35,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
   const tripState = useAppSelector(selectTripState);
   const sidebarOpen = useAppSelector(selectSidebarOpen);
   const selectedActivity = useAppSelector(selectSelectedActivity);
+
   const selectedAccommodation = useAppSelector(selectSelectedAccommodation);
+
+  // Smart Restore State
+  const selectedDayId = useAppSelector(state => state.dashboard.selectedDayId);
+  const trashBinOpen = useAppSelector(state => state.dashboard.trashBinOpen);
 
   // Early return if no data
   if (!itinerary || !tripState) {
@@ -72,7 +78,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
     activeTab,
     discoveryItems,
     discoveryLoading,
+    activeFilters,
+    availableFilters,
+    isSearchMode,
     handleTabChange,
+    handleToggleFilter,
+    handleRefresh,
   } = useDiscovery(tripState);
 
   const [manualAccommodationDayId, setManualAccommodationDayId] = React.useState<string | null>(null);
@@ -138,6 +149,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
             activeTab={activeTab}
             discoveryItems={discoveryItems}
             isLoading={discoveryLoading}
+            // Smart Filter Props
+            availableFilters={availableFilters}
+            activeFilters={activeFilters}
+            isSearchMode={isSearchMode}
+            onToggleFilter={handleToggleFilter}
+            onRefresh={handleRefresh}
             setActiveTab={handleTabChange}
             onClose={() => dispatch(setSidebarOpen(false))}
           />
@@ -225,6 +242,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
                 dispatch(deleteDay({ dayId }));
                 dispatch(persistItinerary());
               }}
+              // Smart Restore Props
+              selectedDayId={selectedDayId}
+              onSelectDay={(dayId) => dispatch(selectDay(dayId))}
+              trashBinOpen={trashBinOpen}
+              onUpdateDay={(dayId, updates) => {
+                dispatch(updateDay({ dayId, updates }));
+                dispatch(persistItinerary());
+              }}
             />
 
             {/* Drag Overlay */}
@@ -252,6 +277,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
 
         {/* ChatBot - Fixed Position */}
         <ChatBot />
+
+        {/* Trash Bin - Fixed Position */}
+        <TrashBin />
 
         {/* Activity Detail Modal */}
         <DetailModal

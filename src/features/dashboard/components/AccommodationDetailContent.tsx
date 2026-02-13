@@ -9,8 +9,27 @@ interface AccommodationDetailContentProps {
 
 export const AccommodationDetailContent: React.FC<AccommodationDetailContentProps> = ({ accommodation, onRemove }) => {
     const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
+    const [isHovering, setIsHovering] = React.useState(false);
+
     // Use provided gallery or fallback to a default image
     const images = accommodation.imageGallery?.length ? accommodation.imageGallery : ['https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000'];
+
+    console.log('AccommodationDetailContent:', {
+        name: accommodation.hotelName,
+        galleryLength: accommodation.imageGallery?.length,
+        images
+    });
+
+    // -- Auto-Play Carousel --
+    React.useEffect(() => {
+        if (images.length <= 1 || isHovering) return;
+
+        const timer = setInterval(() => {
+            setCurrentImageIndex((prev) => (prev + 1) % images.length);
+        }, 3000); // 3 seconds per slide
+
+        return () => clearInterval(timer);
+    }, [images.length, isHovering]);
 
     // -- Carousel Navigation --
     const nextImage = (e: React.MouseEvent) => {
@@ -25,40 +44,51 @@ export const AccommodationDetailContent: React.FC<AccommodationDetailContentProp
 
     return (
         <div className="space-y-6">
-            <div className="aspect-video w-full rounded-2xl bg-slate-100 overflow-hidden relative group">
-                <img
-                    src={images[currentImageIndex]}
-                    alt={accommodation.hotelName}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
+            <div
+                className="aspect-video w-full rounded-2xl bg-slate-100 overflow-hidden relative group"
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => setIsHovering(false)}
+            >
+                {images.map((img, idx) => (
+                    <img
+                        key={idx}
+                        src={img}
+                        alt={`${accommodation.hotelName} ${idx + 1}`}
+                        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out ${idx === currentImageIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                    />
+                ))}
 
                 {/* Carousel Controls */}
                 {images.length > 1 && (
-                    <>
+                    <div className="absolute inset-0 pointer-events-none">
                         <button
                             onClick={prevImage}
-                            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/30 backdrop-blur hover:bg-white/50 p-2 rounded-full text-white transition-all opacity-0 group-hover:opacity-100"
+                            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/30 backdrop-blur hover:bg-white/50 p-2 rounded-full text-white transition-all opacity-0 group-hover:opacity-100 z-20 pointer-events-auto"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                         </button>
                         <button
                             onClick={nextImage}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/30 backdrop-blur hover:bg-white/50 p-2 rounded-full text-white transition-all opacity-0 group-hover:opacity-100"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/30 backdrop-blur hover:bg-white/50 p-2 rounded-full text-white transition-all opacity-0 group-hover:opacity-100 z-20 pointer-events-auto"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                         </button>
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20 pointer-events-auto">
                             {images.map((_, idx) => (
-                                <div
+                                <button
                                     key={idx}
-                                    className={`w-1.5 h-1.5 rounded-full transition-all ${idx === currentImageIndex ? 'bg-white w-3' : 'bg-white/50'}`}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setCurrentImageIndex(idx);
+                                    }}
+                                    className={`w-1.5 h-1.5 rounded-full transition-all ${idx === currentImageIndex ? 'bg-white w-3' : 'bg-white/50 hover:bg-white/80'}`}
                                 />
                             ))}
                         </div>
-                    </>
+                    </div>
                 )}
 
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5">
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 z-20">
                     <Star className="w-4 h-4 text-amber-400 fill-current" />
                     <span className="font-bold text-slate-800 text-sm">{accommodation.rating}</span>
                 </div>
