@@ -40,9 +40,16 @@ export const recalculateDayTimeline = (activities: Activity[]): Activity[] => {
         const duration = activity.durationMinutes || DEFAULT_DURATION;
         currentMs += duration * 60000;
 
+        const endTimeDate = new Date(currentMs);
+        const endTimeString = endTimeDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+
         return {
             ...activity,
             time: timeString,
+            timeSlot: {
+                start: timeString,
+                end: endTimeString
+            },
             travelTimeFromPrev: travelMinutes
         };
     });

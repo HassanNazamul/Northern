@@ -1,32 +1,30 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { ItineraryResponse, DayPlan, Activity, Accommodation, TripState } from '@types';
+import { Trip, DayPlan, Activity, Accommodation, TripState } from '@types';
 import { recalculateDayTimeline } from '@features/dashboard/utils';
-import { api } from '@api/axiosInstance';
+import { getTrip } from '@services/api';
 import { RootState } from '../store';
 
 // -- Async Thunks --
-
-// -- Async Thunks --
-// Uses the centralized API instance to fetch data from the configured VITE_API_BASE_URL
+// Uses the centralized API service to fetch data
 export const fetchItinerary = createAsyncThunk(
     'dashboard/fetchItinerary',
     async (tripId: string = 'current') => {
         console.log(`Fetching itinerary for ${tripId} from backend...`);
-        const response = await api.get<ItineraryResponse>(`/trips/${tripId}`);
-        console.log('Itinerary received:', response.data);
-        return response.data;
+        const trip = await getTrip(tripId);
+        if (!trip) throw new Error('Trip not found');
+        console.log('Itinerary received:', trip);
+        return trip;
     }
 );
 
+// Persist stub - in a real app this would call api.updateTrip or similar
 export const persistItinerary = createAsyncThunk(
     'dashboard/persistItinerary',
     async (_, { getState }) => {
         const state = getState() as RootState;
         const itinerary = state.dashboard.itinerary;
         if (!itinerary) return;
-
-        // We use 'current' as the ID for the main trip in this mock setup
-        await api.patch(`/trips/current`, itinerary);
+        console.log('Persisting itinerary (stub):', itinerary);
     }
 );
 
@@ -43,8 +41,8 @@ interface DashboardState {
     loading: boolean;
     error: string | null;
     // -- Data State --
-    // Stores the full itinerary API response (days, activities)
-    itinerary: ItineraryResponse | null;
+    // Stores the full trip API response
+    itinerary: Trip | null;
     // Stores trip settings like budget, destination, and travelers
     tripState: TripState | null;
 
@@ -89,7 +87,7 @@ const dashboardSlice = createSlice({
     name: 'dashboard',
     initialState,
     reducers: {
-        setItinerary: (state, action: PayloadAction<ItineraryResponse>) => {
+        setItinerary: (state, action: PayloadAction<Trip>) => {
             state.itinerary = action.payload;
         },
 
@@ -216,7 +214,7 @@ const dashboardSlice = createSlice({
             const [moved] = days.splice(action.payload.oldIndex, 1);
             days.splice(action.payload.newIndex, 0, moved);
 
-            state.itinerary.itinerary = days.map((d, i) => ({ ...d, day: i + 1 }));
+            state.itinerary.itinerary = days.map((d, i) => ({ ...d, dayNumber: i + 1 }));
             state.dragState = initialState.dragState;
         },
 
@@ -228,7 +226,7 @@ const dashboardSlice = createSlice({
             [days[action.payload.index1], days[action.payload.index2]] =
                 [days[action.payload.index2], days[action.payload.index1]];
 
-            state.itinerary.itinerary = days.map((d, i) => ({ ...d, day: i + 1 }));
+            state.itinerary.itinerary = days.map((d, i) => ({ ...d, dayNumber: i + 1 }));
             state.dragState = initialState.dragState;
         },
 
@@ -283,7 +281,8 @@ const dashboardSlice = createSlice({
             const newDayNum = state.itinerary.itinerary.length + 1;
             const newDay: DayPlan = {
                 id: `day-${Date.now()}`,
-                day: newDayNum,
+                tripId: state.itinerary.id,
+                dayNumber: newDayNum,
                 theme: 'New Day',
                 activities: []
             };
@@ -301,7 +300,7 @@ const dashboardSlice = createSlice({
                     state.trashBin.push({
                         id: `trash-accom-${Date.now()}`,
                         originalDayId: action.payload.dayId,
-                        description: `Hotel: ${dayToDelete.accommodation.hotelName} (from Deleted Day ${dayToDelete.day})`,
+                        description: `Hotel: ${dayToDelete.accommodation.hotelName} (from Deleted Day ${dayToDelete.dayNumber})`,
                         type: 'accommodation',
                         data: dayToDelete.accommodation,
                         deletedAt: Date.now()
@@ -311,7 +310,7 @@ const dashboardSlice = createSlice({
                     state.trashBin.push({
                         id: `trash-act-${Date.now()}-${idx}`,
                         originalDayId: action.payload.dayId,
-                        description: `Activity: ${act.title || 'Untitled'} (from Deleted Day ${dayToDelete.day})`,
+                        description: `Activity: ${act.title || 'Untitled'} (from Deleted Day ${dayToDelete.dayNumber})`,
                         type: 'activity',
                         data: act,
                         deletedAt: Date.now()
@@ -323,7 +322,7 @@ const dashboardSlice = createSlice({
             // Re-index days
             state.itinerary.itinerary = newItinerary.map((d, index) => ({
                 ...d,
-                day: index + 1
+                dayNumber: index + 1
             }));
             state.itinerary.total_days = newItinerary.length;
         },
@@ -343,10 +342,6 @@ const dashboardSlice = createSlice({
             state.itinerary.itinerary[dayIndex].activities[activityIndex] = updatedActivity;
 
             // Recalculate timeline if time/duration changed, or just to be safe
-            // This ensures subsequent activities are shifted if necessary
-            state.itinerary.itinerary[dayIndex].activities = recalculateDayTimeline(state.itinerary.itinerary[dayIndex].activities);
-            // Recalculate timeline if time/duration changed, or just to be safe
-            // This ensures subsequent activities are shifted if necessary
             state.itinerary.itinerary[dayIndex].activities = recalculateDayTimeline(state.itinerary.itinerary[dayIndex].activities);
         },
 
@@ -370,17 +365,14 @@ const dashboardSlice = createSlice({
             const trashItem = state.trashBin[trashIndex];
 
             // Smart Restore Logic
-            // 1. Identify Target Day
             let targetDayIndex = -1;
 
             if (state.selectedDayId) {
                 targetDayIndex = state.itinerary.itinerary.findIndex(d => d.id === state.selectedDayId);
             }
 
-            // Hotel-Specific Logic: Global Empty Slot Scan
-            // If no day is selected (or selection invalid), try to find an existing empty slot first
+            // Hotel-Specific: Scan for empty slot
             if (trashItem.type === 'accommodation' && targetDayIndex === -1) {
-                // Scan backwards to find the latest day WITHOUT an accommodation
                 for (let i = state.itinerary.itinerary.length - 1; i >= 0; i--) {
                     if (!state.itinerary.itinerary[i].accommodation) {
                         targetDayIndex = i;
@@ -389,22 +381,23 @@ const dashboardSlice = createSlice({
                 }
             }
 
-            // Fallback to Original Day if no selection found
+            // Fallback to Original Day
             if (targetDayIndex === -1) {
                 targetDayIndex = state.itinerary.itinerary.findIndex(d => d.id === trashItem.originalDayId);
             }
 
-            // Fallback to Latest Day if still not found
+            // Fallback to Latest Day
             if (targetDayIndex === -1 && state.itinerary.itinerary.length > 0) {
                 targetDayIndex = state.itinerary.itinerary.length - 1;
             }
 
-            // If still no day (empty itinerary), creating new day is the only option
+            // Create New Day if needed
             if (targetDayIndex === -1) {
                 const newDayNum = state.itinerary.itinerary.length + 1;
                 const newDay: DayPlan = {
                     id: `day-${Date.now()}`,
-                    day: newDayNum,
+                    tripId: state.itinerary.id,
+                    dayNumber: newDayNum,
                     theme: 'Restored Day',
                     activities: []
                 };
@@ -413,21 +406,19 @@ const dashboardSlice = createSlice({
                 targetDayIndex = state.itinerary.itinerary.length - 1;
             }
 
-            // 2. Place Item
+            // Place Item
             if (trashItem.type === 'activity') {
-                // Activity: Always append to target
                 state.itinerary.itinerary[targetDayIndex].activities.push(trashItem.data as Activity);
                 state.itinerary.itinerary[targetDayIndex].activities = recalculateDayTimeline(state.itinerary.itinerary[targetDayIndex].activities);
             } else if (trashItem.type === 'accommodation') {
-                // Hotel: Check availability
                 if (!state.itinerary.itinerary[targetDayIndex].accommodation) {
                     state.itinerary.itinerary[targetDayIndex].accommodation = trashItem.data as Accommodation;
                 } else {
-                    // Target full: Create NEW Day to avoid overwriting
                     const newDayNum = state.itinerary.itinerary.length + 1;
                     const newDay: DayPlan = {
                         id: `day-${Date.now()}`,
-                        day: newDayNum,
+                        tripId: state.itinerary.id,
+                        dayNumber: newDayNum,
                         theme: 'Restored Day',
                         accommodation: trashItem.data as Accommodation,
                         activities: []
@@ -440,7 +431,6 @@ const dashboardSlice = createSlice({
             // Remove from trash
             state.trashBin.splice(trashIndex, 1);
 
-            // Auto-close if empty
             if (state.trashBin.length === 0) {
                 state.trashBinOpen = false;
             }
@@ -450,9 +440,6 @@ const dashboardSlice = createSlice({
             state.trashBin = [];
             state.trashBinOpen = false;
         },
-
-        // UI State Actions
-
 
         // UI State Actions
         toggleSidebar: (state) => {
@@ -519,7 +506,6 @@ export const {
     updateActivity,
     updateDay,
     restoreFromTrash,
-
     emptyTrash,
     selectDay,
     setTrashBinOpen

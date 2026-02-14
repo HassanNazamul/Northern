@@ -1,5 +1,5 @@
-import { GoogleGenAI, Type, GenerateContentResponse } from "@google/genai";
-import { ItineraryResponse, TripState, DayPlan, Accommodation, Activity } from "@types";
+import { GoogleGenAI } from "@google/genai";
+import { Trip, TripState, DayPlan, Accommodation, Activity } from "../types";
 
 const getAI = () => new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
 
@@ -19,14 +19,13 @@ const extractJSON = (text: string) => {
     }
 };
 
-export const generateInitialItinerary = async (trip: TripState): Promise<ItineraryResponse> => {
+export const generateInitialItinerary = async (trip: TripState): Promise<Trip> => {
     const ai = getAI();
     const diffInMs = new Date(trip.endDate).getTime() - new Date(trip.startDate).getTime();
     const totalDays = Math.max(1, Math.ceil(diffInMs / (1000 * 60 * 60 * 24)) + 1);
 
     // -- AI Prompt Construction --
-    // Builds a structured prompt to enforce JSON output adhering to our schema.
-    // Specifying "Canadian locations only" and "realistic travel times" improves result quality.
+    // Updated to reflect new schema with stats, strict types, etc.
     const prompt = `
     Create a hyper-specific, logistically sound Canadian travel itinerary in JSON format.
     Destination: ${trip.destination}
@@ -39,28 +38,37 @@ export const generateInitialItinerary = async (trip: TripState): Promise<Itinera
     2. Ensure travel times between activities are realistic for Canadian geography.
     3. If destination is seasonal (e.g. Banff in January), include winter activities.
     4. Provide exactly ${totalDays} days.
-    5. Each day MUST have a unique stable "id" string.
-    6. Suggest a unique, highly-rated accommodation for each day based on the location of that day's activities.
+    5. Each day MUST have a unique stable "id" string (e.g., "day_...").
+    6. Suggest a unique, highly-rated accommodation for each day (if moving) or one for the whole trip.
     7. For accommodations, provide amenities, real image urls if possible (or placeholders), and booking links.
-    8. For activities, provide estimated duration in minutes and approximate latitude/longitude coordinates if known.
+    8. For activities, provide estimated duration in minutes and approximate latitude/longitude coordinates.
 
-    Output strictly valid JSON with the following structure:
+    Output strictly valid JSON strictly matching this structure:
     {
+      "id": "trp_uuid",
       "trip_title": "string",
       "total_days": number,
       "currency": "CAD",
       "itinerary": [
         {
-          "id": "string",
-          "day": number,
+          "id": "day_uuid",
+          "tripId": "trp_uuid",
+          "dayNumber": number,
           "theme": "string",
+          "stats": {
+            "totalCost": number,
+            "totalDistance": number,
+            "activityCount": number
+          },
           "accommodation": {
+            "id": "htl_uuid",
+            "type": "hotel",
             "hotelName": "string",
             "address": "string",
             "pricePerNight": number,
             "rating": number,
+            "bookingStatus": "draft",
             "contactNumber": "string",
-            "bookingUrl": "string",
             "mapLink": "string",
             "imageGallery": ["string"],
             "amenities": ["string"],
@@ -68,22 +76,23 @@ export const generateInitialItinerary = async (trip: TripState): Promise<Itinera
           },
           "activities": [
             {
-              "id": "string",
-              "time": "string",
+              "id": "act_uuid",
+              "type": "activity", 
               "title": "string",
               "location": "string",
               "description": "string",
               "cost_estimate": number,
               "category": "Food" | "Sightseeing" | "Adventure" | "Relaxation" | "Transport",
               "durationMinutes": number,
-              "coordinates": { "lat": number, "lng": number }
+              "coordinates": { "lat": number, "lng": number },
+              "status": "planned"
             }
           ]
         }
       ],
       "sidebar_suggestions": [
         {
-          "id": "string",
+          "id": "sug_uuid",
           "title": "string",
           "reason": "string",
           "cost_estimate": number,
@@ -115,10 +124,13 @@ export const getAccommodationSuggestion = async (location: string, budget: numbe
 
     Output strictly valid JSON with the following structure:
     {
+      "id": "htl_uuid",
+      "type": "hotel",
       "hotelName": "string",
       "address": "string",
       "pricePerNight": number,
       "rating": number,
+      "bookingStatus": "draft",
       "contactNumber": "string",
       "bookingUrl": "string",
       "mapLink": "string",
@@ -154,11 +166,8 @@ export const getDiscoverySuggestions = async (
 
     Output strictly valid JSON array of objects.
     
-    If Category is 'stay', return Accommodation objects:
-    [{ "hotelName": "...", "pricePerNight": 100, "rating": 4.5, "address": "...", "description": "...", "imageGallery": ["..."], "amenities": ["..."], "bookingUrl": "..." }]
-
-    If Category is 'culinary', 'exploration', or 'events', return Activity objects:
-    [{ "id": "uuid", "title": "...", "location": "...", "description": "...", "cost_estimate": 50, "category": "Food"|"Sightseeing"|"Adventure", "time": "Flexible", "durationMinutes": 90, "coordinates": {"lat": 0, "lng": 0} }]
+    If Category is 'stay', return Accommodation objects (with id, type, bookingStatus).
+    If Category is 'culinary', 'exploration', or 'events', return Activity objects (with id, type, status, metadata).
   `;
 
     const response = await ai.models.generateContent({

@@ -21,6 +21,7 @@ interface SortableDayCardProps {
     onSelectDay?: (dayId: string) => void;
     trashBinOpen?: boolean;
     onUpdateDay?: (dayId: string, updates: Partial<DayPlan>) => void;
+    dayIndex: number;
 }
 
 export const SortableDayCard: React.FC<SortableDayCardProps> = (props) => {
@@ -66,6 +67,7 @@ export const SortableDayCard: React.FC<SortableDayCardProps> = (props) => {
                 onSelectDay={props.onSelectDay}
                 trashBinOpen={props.trashBinOpen}
                 onUpdateDay={props.onUpdateDay}
+                dayIndex={props.dayIndex}
             />
             {/* Swap Indicator Overlay */}
             {isOver && !isDragging && (

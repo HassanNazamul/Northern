@@ -22,8 +22,11 @@ export const selectTotalCost = createSelector(
 );
 
 // Discovery Selectors
-export const selectDiscoveryTab = (state: RootState) => state.discovery.activeTab;
-export const selectDiscoveryItems = (state: RootState) => state.discovery.items;
-export const selectDiscoveryLoading = (state: RootState) => state.discovery.loading;
+export {
+    selectDiscoveryTab,
+    selectDiscoveryItems,
+    selectDiscoveryLoading,
+    selectDiscoveryFilters
+} from './slices/discoverySlice';
+
 export const selectDiscoveryError = (state: RootState) => state.discovery.error;
-export const selectDiscoveryFilters = (state: RootState) => state.discovery.activeFilters;

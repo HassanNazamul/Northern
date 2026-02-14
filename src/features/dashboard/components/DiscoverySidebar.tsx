@@ -42,33 +42,33 @@ export const DiscoverySidebar: React.FC<DiscoverySidebarProps> = ({
 
     return (
         <div className={cn(
-            "h-full bg-white border-r border-slate-200 flex flex-col relative shadow-2xl w-[340px]",
-            "transition-opacity duration-500 ease-in-out",
+            "h-full bg-white dark:bg-surface-a0 border-r border-slate-200 dark:border-surface-a10 flex flex-col relative shadow-2xl w-[340px]",
+            "transition-all duration-500 ease-in-out",
             isOpen ? "opacity-100" : "opacity-0"
         )}>
-            <div className="px-6 py-6 border-b border-slate-100 bg-slate-50/50">
+            <div className="px-6 py-6 border-b border-slate-100 dark:border-surface-a10 bg-slate-50/50 dark:bg-surface-a0">
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-slate-900">
+                    <div className="flex items-center gap-2 text-slate-900 dark:text-white">
                         <div className="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center text-white">
                             <Sparkles className="w-4 h-4" />
                         </div>
                         <span className="font-bold tracking-tight">Discovery</span>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full text-slate-400">
+                    <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-surface-a10 rounded-full text-slate-400 dark:text-slate-500">
                         <PanelLeftClose className="w-4 h-4" />
                     </button>
                 </div>
             </div>
 
             {/* -- Tabs Navigation -- */}
-            <div className="flex p-2 bg-slate-50 gap-1 border-b border-slate-100">
+            <div className="flex p-2 bg-slate-50 dark:bg-transparent gap-1 border-b border-slate-100 dark:border-surface-a10">
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         className={cn(
                             "flex-1 flex flex-col items-center gap-1 py-3 rounded-lg transition-all text-[10px] font-bold uppercase tracking-wide",
-                            activeTab === tab.id ? "bg-white shadow-sm text-blue-600" : "text-slate-400 hover:bg-white/50 hover:text-slate-600"
+                            activeTab === tab.id ? "bg-white dark:bg-surface-a10 shadow-sm text-primary-a10 dark:text-primary-a30 border border-transparent dark:border-surface-a20" : "text-slate-400 dark:text-slate-500 hover:bg-white/50 dark:hover:bg-surface-a10/50 hover:text-slate-600 dark:hover:text-slate-300"
                         )}
                     >
                         <tab.icon className="w-4 h-4" />{tab.label}
@@ -87,9 +87,9 @@ export const DiscoverySidebar: React.FC<DiscoverySidebarProps> = ({
 
             {/* -- Draggable Items List -- */}
             {/* Renders a list of items that can be dragged onto the canvas */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50/30">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50/30 dark:bg-transparent">
                 {isLoading ? (
-                    <div className="flex flex-col items-center justify-center h-full text-slate-400 gap-2">
+                    <div className="flex flex-col items-center justify-center h-full text-slate-400 dark:text-slate-600 gap-2">
                         <RefreshCcw className="w-6 h-6 animate-spin" />
                         <span className="text-xs font-bold">Curating Suggestions...</span>
                     </div>

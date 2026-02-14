@@ -34,11 +34,13 @@ export const ActivityFormModal: React.FC<ActivityFormModalProps> = ({ isOpen, on
             title: formData.title || 'New Activity',
             location: formData.location || '',
             cost_estimate: Number(formData.cost_estimate) || 0,
-            durationMinutes: Number(formData.durationMinutes) || 60,
             description: formData.description || '',
             category: formData.category as any || 'Sightseeing',
             imageUrl: formData.imageUrl,
-            time: formData.time || '09:00 AM',
+            type: 'activity',
+            status: 'planned',
+            time: formData.time || '09:00 AM', // Kept for UI
+            durationMinutes: Number(formData.durationMinutes) || 60,
             // Default coordinates if not provided/geocoded
             coordinates: { lat: 0, lng: 0 }
         };

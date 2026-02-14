@@ -161,7 +161,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
         </div>
 
         {/* Main Content Area - Flexible Column */}
-        <div className="flex flex-col bg-[#FCFCFC] relative z-10 min-w-0 overflow-hidden">
+        <div className="flex flex-col bg-[#FCFCFC] dark:bg-surface-a0 relative z-10 min-w-0 overflow-hidden">
 
           {/* -- Live Mesh Background -- */}
           <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
@@ -233,7 +233,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
                   category: 'Sightseeing',
                   cost_estimate: 0,
                   location: 'TBD',
-                  isDraft: true
+                  isDraft: true,
+                  type: 'activity',
+                  status: 'planned'
                 };
                 dispatch(addActivity({ dayId, activity: newActivity }));
                 dispatch(persistItinerary());

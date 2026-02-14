@@ -1,11 +1,20 @@
 import { Activity } from './activity';
 import { Accommodation } from './accommodation';
 
+export interface Stats {
+    totalCost: number;
+    totalDistance: number; // km
+    activityCount: number;
+}
+
 export interface DayPlan {
     id: string; // Stable ID for drag-and-drop
-    day: number;
+    tripId: string;
+    dayNumber: number;
+    date?: string; // ISO Date "YYYY-MM-DD"
     theme: string;
-    accommodation?: Accommodation;
+    stats?: Stats;
+    accommodation?: Accommodation | null;
     activities: Activity[];
 }
 
@@ -16,12 +25,5 @@ export interface Suggestion {
     cost_estimate: number;
     category: Activity['category'];
     description: string;
-}
-
-export interface ItineraryResponse {
-    trip_title: string;
-    total_days: number;
-    currency: string;
-    itinerary: DayPlan[];
-    sidebar_suggestions: Suggestion[];
+    tags?: string[];
 }

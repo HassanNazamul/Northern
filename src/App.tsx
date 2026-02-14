@@ -1,17 +1,9 @@
 import React, { useState } from 'react';
 import { LandingPage } from '@features/landing';
 import { Dashboard } from '@features/dashboard';
-import { TripState } from '@types';
-
-// ========================================
-// REAL API (Commented out due to rate limits)
-// ========================================
-// import { generateInitialItinerary } from '@services';
-
-// ========================================
-// MOCK DATA FOR DEVELOPMENT
-// ========================================
-import { fetchItinerary, setTripState, resetDashboard } from './state/slices/dashboardSlice';
+import { TripState, TripGenerationRequest } from '@types';
+import { createTrip } from '@services/api';
+import { setItinerary, setTripState, resetDashboard } from './state/slices/dashboardSlice';
 import { useAppDispatch } from './state';
 
 const App: React.FC = () => {
@@ -20,20 +12,48 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   // -- API Integration --
-  // Fetches the persistent itinerary from the backend (or JSON server)
-  const handleGenerate = async (trip: TripState) => {
+  const handleGenerate = async (tripState: TripState) => {
     setLoading(true);
-    dispatch(setTripState(trip));
+    dispatch(setTripState(tripState));
 
     try {
-      // Fetch the 'current' trip from the persistent backend
-      // In dev mode, this hits port 3001 (db.json)
-      await dispatch(fetchItinerary('current')).unwrap();
+      // Map TripState to TripGenerationRequest
+      const request: TripGenerationRequest = {
+        destination: {
+          city: tripState.destination,
+          // We could add country/coordinates if TripState had them or via geocoding
+        },
+        dates: {
+          startDate: tripState.startDate,
+          endDate: tripState.endDate,
+        },
+        travelers: {
+          count: tripState.travelers || 1, // Default to 1 if not in TripState
+          type: 'friends' // Default or derive from TripState if added
+        },
+        budget: {
+          amount: tripState.budget,
+          currency: 'CAD', // Default
+          level: 'moderate' // Default or derive
+        },
+        preferences: {
+          theme: tripState.vibe,
+          interests: [] // Populate if TripState has interests
+        }
+      };
+
+      console.log("Generating trip with request:", request);
+
+      // Call the Mock API to generate (or fetch mock) trip
+      const newTrip = await createTrip(request);
+
+      // Update Redux state with the new trip
+      dispatch(setItinerary(newTrip));
+
       setView('dashboard');
     } catch (err) {
       console.error("Itinerary generation failed", err);
-      // Fallback or alert
-      alert("Failed to load itinerary. Ensure json-server is running (port 3001).");
+      alert("Failed to generate itinerary. Ensure json-server is running (port 3001) for mock data.");
     } finally {
       setLoading(false);
     }

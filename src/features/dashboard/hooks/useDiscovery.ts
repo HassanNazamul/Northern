@@ -29,24 +29,19 @@ export const useDiscovery = (tripState: TripState) => {
 
     // -- Discovery Logic --
     // Fetches suggestions based on the current active tab and trip settings.
-    // DOES NOT automatically fetch when filters change (manual trigger required).
+    // OPTIMIZATION: Only fetch if we don't have items, or on explicit refresh.
+    // Tab changes are handled client-side via selectors.
     useEffect(() => {
-        const { destination, vibe, budget } = tripState;
-
-        // Scenario 1: Initial & Reverted State (Tab Change)
-        // When tab changes, activeFilters resets to [].
-        // We must sync currentlyActiveParams to [] so the button defaults to "Refresh" (Shuffle).
-        setCurrentlyActiveParams([]);
-
-        dispatch(fetchDiscoveryItems({
-            tab: activeTab,
-            filters: activeFilters,
-        }));
+        // Initial Fetch if empty
+        if (discoveryItems.length === 0 && !discoveryLoading) {
+            dispatch(fetchDiscoveryItems());
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeTab, tripState, dispatch]);
+    }, [dispatch]); // Run once on mount (or if dispatch changes, which is stable)
 
     const handleTabChange = (tab: DiscoveryTab) => {
         dispatch(setActiveTab(tab));
+        // No fetch needed - selector handles filtering
     };
 
     const handleToggleFilter = (filter: string) => {
@@ -54,17 +49,8 @@ export const useDiscovery = (tripState: TripState) => {
     };
 
     const handleRefresh = () => {
-        // Scenario 2: Post-Search State
-        // On Search Click: Update Canvas state (currentlyActiveParams) to match UI state (activeFilters).
-        // This effectively switches the button to "Refresh" (Shuffle).
-        setCurrentlyActiveParams(activeFilters);
-
-        // Force re-fetch
-        const { destination, vibe, budget } = tripState;
-        dispatch(fetchDiscoveryItems({
-            tab: activeTab,
-            filters: activeFilters,
-        }));
+        // Force re-fetch (simulates getting new AI suggestions)
+        dispatch(fetchDiscoveryItems());
     };
 
     // available filters for current tab

@@ -1,10 +1,10 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { api } from '@api/axiosInstance';
+import { createSlice, createAsyncThunk, PayloadAction, createSelector } from '@reduxjs/toolkit';
+import { getSuggestions } from '@services/api';
+import { RootState } from '../store';
 
 export type DiscoveryTab = 'culinary' | 'exploration' | 'stay' | 'events';
 
 // -- Mock data mapping --
-// Maps the UI tabs to the categories in db.json
 const TAB_CATEGORY_MAP: Record<string, string[]> = {
     culinary: ['Food', 'Drink'],
     exploration: ['Adventure', 'Sightseeing', 'Relaxation'],
@@ -12,7 +12,6 @@ const TAB_CATEGORY_MAP: Record<string, string[]> = {
     events: ['Event', 'Festival']
 };
 
-// -- Filter Constants --
 export const FILTERS_BY_TAB: Record<string, string[]> = {
     culinary: ['Local Favorites', 'Fine Dining', 'Budget', 'Romantic', 'Spicy', 'Casual'],
     exploration: ['Nature', 'History', 'Free', 'Shopping', 'Architecture', 'Walkable'],
@@ -22,7 +21,7 @@ export const FILTERS_BY_TAB: Record<string, string[]> = {
 
 interface DiscoveryState {
     activeTab: DiscoveryTab;
-    items: any[];
+    allItems: any[]; // Store ALL fetched suggestions here
     activeFilters: string[];
     loading: boolean;
     error: string | null;
@@ -30,44 +29,19 @@ interface DiscoveryState {
 
 const initialState: DiscoveryState = {
     activeTab: 'exploration',
-    items: [],
+    allItems: [],
     activeFilters: [],
     loading: false,
     error: null,
 };
 
+// Fetches ALL suggestions from the backend (or mock)
+// Should be called on initial load or "Search/Shuffle"
 export const fetchDiscoveryItems = createAsyncThunk(
     'discovery/fetchItems',
-    async ({ tab, filters }: { tab: DiscoveryTab, filters: string[] }) => {
-        // Fetch all suggestions from the mock DB
-        const response = await api.get<any[]>('/suggestions');
-        const allItems = response.data;
-
-        // Filter based on the active tab
-        const allowedCategories = TAB_CATEGORY_MAP[tab] || [];
-
-        return allItems.filter(item => {
-            // 1. Category Filter
-            let matchesCategory = false;
-            // Accommodations might not have a 'category' field but have 'hotelName'
-            if (tab === 'stay' && item.hotelName) matchesCategory = true;
-            else if (tab !== 'stay' && item.hotelName) matchesCategory = false;
-            else matchesCategory = allowedCategories.includes(item.category);
-
-            if (!matchesCategory) return false;
-
-            // 2. Tag Filter (Context-Aware)
-            // If no filters are selected, show all items for the category
-            if (filters.length === 0) return true;
-
-            // If filters are selected, item MUST match at least one filter
-            // (OR logic between filters, could be AND if stricter)
-            // User requested "Multi-Select", usually implies OR or AND.
-            // Let's go with OR for discovery (generous).
-            // Check if item.tags contains ANY of the activeFilters
-            if (!item.tags) return false;
-            return filters.some(filter => item.tags.includes(filter));
-        });
+    async () => {
+        // Fetch all suggestions from the mock DB via the centralized service
+        return await getSuggestions({}) as any[];
     }
 );
 
@@ -90,10 +64,6 @@ const discoverySlice = createSlice({
         clearFilters: (state) => {
             state.activeFilters = [];
         },
-        setDiscoveryItems: (state, action: PayloadAction<any[]>) => {
-            state.items = action.payload;
-            state.loading = false;
-        },
     },
     extraReducers: (builder) => {
         builder
@@ -103,7 +73,7 @@ const discoverySlice = createSlice({
             })
             .addCase(fetchDiscoveryItems.fulfilled, (state, action) => {
                 state.loading = false;
-                state.items = action.payload;
+                state.allItems = action.payload;
             })
             .addCase(fetchDiscoveryItems.rejected, (state, action) => {
                 state.loading = false;
@@ -112,6 +82,35 @@ const discoverySlice = createSlice({
     },
 });
 
-export const { setActiveTab, setDiscoveryItems, toggleFilter, clearFilters } = discoverySlice.actions;
+export const { setActiveTab, toggleFilter, clearFilters } = discoverySlice.actions;
+
+// -- Selectors --
+
+export const selectDiscoveryTab = (state: RootState) => state.discovery.activeTab;
+export const selectDiscoveryFilters = (state: RootState) => state.discovery.activeFilters;
+export const selectDiscoveryLoading = (state: RootState) => state.discovery.loading;
+
+// Client-side filtering selector
+export const selectDiscoveryItems = createSelector(
+    [(state: RootState) => state.discovery.allItems, (state: RootState) => state.discovery.activeTab, (state: RootState) => state.discovery.activeFilters],
+    (allItems, tab, filters) => {
+        const allowedCategories = TAB_CATEGORY_MAP[tab] || [];
+
+        return allItems.filter(item => {
+            // 1. Category Filter
+            let matchesCategory = false;
+            if (tab === 'stay' && item.hotelName) matchesCategory = true;
+            else if (tab !== 'stay' && item.hotelName) matchesCategory = false;
+            else matchesCategory = allowedCategories.includes(item.category);
+
+            if (!matchesCategory) return false;
+
+            // 2. Tag Filter
+            if (filters.length === 0) return true;
+            if (!item.tags) return false;
+            return filters.some(filter => item.tags.includes(filter));
+        });
+    }
+);
 
 export default discoverySlice.reducer;

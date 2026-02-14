@@ -73,10 +73,11 @@ export const DashboardCanvas: React.FC<DashboardCanvasProps> = ({
                     strategy={rectSortingStrategy}
                 >
                     <div className="grid grid-cols-5 gap-8 p-12 w-max">
-                        {itinerary.map((day) => (
+                        {itinerary.map((day, index) => (
                             <SortableDayCard
                                 key={day.id}
                                 dayPlan={day}
+                                dayIndex={index}
                                 onSelectActivity={onSelectActivity}
                                 onSelectAccommodation={onSelectAccommodation}
                                 onAutoSuggestAccommodation={onAutoSuggestAccommodation}

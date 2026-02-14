@@ -1,27 +1,38 @@
 {
   "trips": [
     {
-      "id": "current",
+      "id": "trp_current",
       "trip_title": "Mock Toronto Adventure",
       "total_days": 2,
       "currency": "CAD",
       "itinerary": [
         {
-          "id": "day-1-mock",
-          "day": 1,
+          "id": "day_1",
+          "tripId": "trp_current",
+          "dayNumber": 1,
+          "date": "2024-06-15",
           "theme": "Downtown Exploration",
+          "stats": {
+            "totalCost": 350,
+            "totalDistance": 5.2,
+            "activityCount": 3
+          },
           "accommodation": {
+            "id": "htl_1",
+            "type": "hotel",
             "hotelName": "Fairmont Royal York",
             "address": "100 Front St W, Toronto, ON",
             "pricePerNight": 250,
             "rating": 4.5,
+            "checkInTime": "15:00",
+            "checkOutTime": "11:00",
             "contactNumber": "+1-416-368-2511",
             "bookingUrl": "https://example.com/booking",
+            "bookingStatus": "confirmed",
             "mapLink": "https://maps.google.com/?q=Fairmont+Royal+York+Toronto",
             "imageGallery": [
               "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1000",
-              "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1000",
-              "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1000"
+              "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1000"
             ],
             "amenities": [
               "WiFi",
@@ -33,271 +44,262 @@
           },
           "activities": [
             {
-              "id": "sug-activity-1-1770968363197",
+              "id": "act_101",
+              "type": "activity",
               "title": "Casa Loma",
               "description": "Gothic Revival castle with beautiful gardens.",
               "location": "1 Austin Terrace, Toronto",
-              "time": "9:00 AM",
+              "timeSlot": {
+                "start": "09:00",
+                "end": "11:00"
+              },
               "cost_estimate": 30,
               "category": "Sightseeing",
               "durationMinutes": 120,
-              "travelTimeFromPrev": 0
+              "coordinates": {
+                "lat": 43.678,
+                "lng": -79.409
+              },
+              "travelTimeFromPrev": 0,
+              "status": "planned"
             },
             {
-              "id": "sug-activity-2-1770960085941",
+              "id": "act_102",
+              "type": "activity",
               "title": "High Park",
               "description": "Large urban park perfect for outdoor activities & cherry blossoms.",
               "location": "1873 Bloor St W, Toronto",
-              "time": "11:30 AM",
+              "timeSlot": {
+                "start": "11:30",
+                "end": "14:30"
+              },
               "cost_estimate": 0,
               "category": "Adventure",
               "durationMinutes": 180,
-              "travelTimeFromPrev": 30
+              "coordinates": {
+                "lat": 43.646,
+                "lng": -79.463
+              },
+              "travelTimeFromPrev": 30,
+              "status": "planned"
             },
             {
-              "id": "activity-1770922559274",
-              "title": "naz",
-              "description": "New Activity",
-              "time": "3:00 PM",
-              "durationMinutes": 60,
-              "category": "Sightseeing",
-              "cost_estimate": 0,
-              "location": "TBD",
-              "isDraft": false,
-              "travelTimeFromPrev": 30
-            },
-            {
-              "id": "sug-food-2-1770960474455",
+              "id": "act_103",
+              "type": "food",
               "title": "Pai Northern Thai Kitchen",
               "description": "Bustling spot for authentic Northern Thai dishes.",
               "location": "18 Duncan St, Toronto",
-              "time": "4:30 PM",
+              "timeSlot": {
+                "start": "16:30",
+                "end": "18:00"
+              },
               "cost_estimate": 40,
               "category": "Food",
               "durationMinutes": 90,
-              "travelTimeFromPrev": 30
-            },
-            {
-              "id": "sug-activity-1-1770961747108",
-              "title": "Casa Loma",
-              "description": "Gothic Revival castle with beautiful gardens.",
-              "location": "1 Austin Terrace, Toronto",
-              "time": "6:30 PM",
-              "cost_estimate": 30,
-              "category": "Sightseeing",
-              "durationMinutes": 120,
-              "travelTimeFromPrev": 30
+              "coordinates": {
+                "lat": 43.647,
+                "lng": -79.388
+              },
+              "travelTimeFromPrev": 30,
+              "status": "planned"
             }
           ]
         },
         {
-          "id": "day-1770965970647",
-          "day": 2,
-          "theme": "New Day",
-          "activities": [],
+          "id": "day_2",
+          "tripId": "trp_current",
+          "dayNumber": 2,
+          "date": "2024-06-16",
+          "theme": "Luxury & Relaxation",
+          "stats": {
+            "totalCost": 600,
+            "totalDistance": 2.0,
+            "activityCount": 0
+          },
           "accommodation": {
-            "id": "sug-stay-1",
+            "id": "htl_2",
+            "type": "hotel",
             "hotelName": "The Ritz-Carlton",
-            "description": "Luxury hotel with a view of the CN Tower.",
-            "rating": 4.8,
-            "pricePerNight": 600,
             "address": "181 Wellington St W, Toronto",
-            "category": "Hotel",
+            "pricePerNight": 600,
+            "rating": 4.8,
+            "bookingStatus": "draft",
+            "contactNumber": "+1-416-585-2500",
+            "bookingUrl": "https://example.com/ritz",
+            "mapLink": "https://maps.google.com/?q=Ritz+Carlton+Toronto",
             "imageGallery": [
-              "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500",
-              "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1000"
+              "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500"
             ],
             "amenities": [
               "Spa",
               "Pool",
               "Luxury Dining"
-            ]
-          }
+            ],
+            "description": "Luxury hotel with a view of the CN Tower."
+          },
+          "activities": []
         }
       ],
       "sidebar_suggestions": [
         {
-          "id": "suggestion-1",
-          "title": "Casa Loma",
-          "reason": "Gothic Revival castle with beautiful gardens",
-          "cost_estimate": 30,
-          "category": "Sightseeing",
-          "description": "Explore this majestic castle with stunning architecture"
+          "id": "sug_1",
+          "title": "Alo Restaurant",
+          "reason": "Top-rated French cuisine",
+          "cost_estimate": 150,
+          "category": "Food",
+          "description": "Contemporary French cuisine in a stylish setting.",
+          "tags": [
+            "Fine Dining",
+            "Romantic",
+            "Local Favorites"
+          ]
         },
         {
-          "id": "suggestion-2",
+          "id": "sug_food_2",
+          "title": "Kensington Market Food Tour",
+          "reason": "Cultural melting pot of flavors",
+          "cost_estimate": 60,
+          "category": "Food",
+          "description": "Taste your way through Toronto's most diverse neighborhood.",
+          "tags": [
+            "Casual",
+            "Local Favorites",
+            "Spicy"
+          ]
+        },
+        {
+          "id": "sug_food_3",
+          "title": "St. Lawrence Market",
+          "reason": "World-famous food market",
+          "cost_estimate": 25,
+          "category": "Food",
+          "description": "Historic market with fresh food artisans and local delicacies.",
+          "tags": [
+            "Budget",
+            "Local Favorites",
+            "Casual"
+          ]
+        },
+        {
+          "id": "sug_2",
           "title": "Distillery District",
-          "reason": "Historic area with art galleries, boutiques, and restaurants",
-          "cost_estimate": 15,
-          "category": "Relaxation",
-          "description": "Victorian-era buildings transformed into trendy shops and cafes"
+          "reason": "Historic area with shops and cafes",
+          "cost_estimate": 0,
+          "category": "Sightseeing",
+          "description": "Pedestrian-only village set in historic distillery buildings.",
+          "tags": [
+            "History",
+            "Shopping",
+            "Walkable"
+          ]
         },
         {
-          "id": "suggestion-3",
-          "title": "High Park",
-          "reason": "Large urban park perfect for outdoor activities",
-          "cost_estimate": 0,
+          "id": "sug_exp_2",
+          "title": "CN Tower EdgeWalk",
+          "reason": "Thrilling city views",
+          "cost_estimate": 195,
           "category": "Adventure",
-          "description": "Nature trails, gardens, and recreational facilities"
+          "description": "Hands-free walk on the ledge of the CN Tower's main pod.",
+          "tags": [
+            "Nature",
+            "Architecture"
+          ]
+        },
+        {
+          "id": "sug_exp_3",
+          "title": "Toronto Island Park",
+          "reason": "Escape the city buzz",
+          "cost_estimate": 10,
+          "category": "Relaxation",
+          "description": "Scenic islands with beaches, picnic spots, and bike trails.",
+          "tags": [
+            "Nature",
+            "Free",
+            "Walkable"
+          ]
+        },
+        {
+          "id": "sug_stay_1",
+          "title": "The Drake Hotel",
+          "reason": "Trendy boutique experience",
+          "cost_estimate": 300,
+          "category": "Hotel",
+          "description": "Cultural hub for art, music, and food in Queen West.",
+          "hotelName": "The Drake Hotel",
+          "tags": [
+            "Boutique",
+            "Trendy",
+            "Central"
+          ]
+        },
+        {
+          "id": "sug_stay_2",
+          "title": "Four Seasons Toronto",
+          "reason": "Ultimate luxury service",
+          "cost_estimate": 700,
+          "category": "Hotel",
+          "description": "Modern elegance in the heart of Yorkville.",
+          "hotelName": "Four Seasons Toronto",
+          "tags": [
+            "Luxury",
+            "Spa",
+            "Central"
+          ]
+        },
+        {
+          "id": "sug_stay_3",
+          "title": "Gladstone House",
+          "reason": "Artistic historic hotel",
+          "cost_estimate": 220,
+          "category": "Hotel",
+          "description": "Restored Victorian hotel featuring artist-designed rooms.",
+          "hotelName": "Gladstone House",
+          "tags": [
+            "Boutique",
+            "History",
+            "Trendy"
+          ]
+        },
+        {
+          "id": "sug_evt_1",
+          "title": "Toronto International Film Festival",
+          "reason": "World-renowned cinema event",
+          "cost_estimate": 50,
+          "category": "Festival",
+          "description": "Screenings of major films and potential celebrity sightings.",
+          "tags": [
+            "Culture",
+            "Social"
+          ]
+        },
+        {
+          "id": "sug_evt_2",
+          "title": "Veld Music Festival",
+          "reason": "Electronic music extravaganza",
+          "cost_estimate": 300,
+          "category": "Festival",
+          "description": "Annual electronic dance music and hip-hop festival.",
+          "tags": [
+            "Music",
+            "Live",
+            "Social"
+          ]
+        },
+        {
+          "id": "sug_evt_3",
+          "title": "Royal Ontario Museum Friday Night Live",
+          "reason": "Culture meets nightlife",
+          "cost_estimate": 30,
+          "category": "Event",
+          "description": "Experience the museum after dark with music, drinks, and food.",
+          "tags": [
+            "Culture",
+            "Music",
+            "Social"
+          ]
         }
       ]
     }
   ],
-  "suggestions": [
-    {
-      "id": "sug-food-1",
-      "title": "Alo Restaurant",
-      "description": "Contemporary French cuisine in a stylish setting.",
-      "category": "Food",
-      "cost_estimate": 150,
-      "location": "163 Spadina Ave, Toronto",
-      "durationMinutes": 120,
-      "tags": [
-        "Fine Dining",
-        "Romantic",
-        "French"
-      ]
-    },
-    {
-      "id": "sug-food-2",
-      "title": "Pai Northern Thai Kitchen",
-      "description": "Bustling spot for authentic Northern Thai dishes.",
-      "category": "Food",
-      "cost_estimate": 40,
-      "location": "18 Duncan St, Toronto",
-      "durationMinutes": 90,
-      "tags": [
-        "Local Favorites",
-        "Spicy",
-        "Casual"
-      ]
-    },
-    {
-      "id": "sug-food-3",
-      "title": "Tim Hortons Experience",
-      "description": "Classic Canadian coffee and donut stop.",
-      "category": "Drink",
-      "cost_estimate": 10,
-      "location": "Various Locations",
-      "durationMinutes": 30,
-      "tags": [
-        "Budget",
-        "Iconic",
-        "Quick"
-      ]
-    },
-    {
-      "id": "sug-activity-1",
-      "title": "Casa Loma",
-      "description": "Gothic Revival castle with beautiful gardens.",
-      "category": "Sightseeing",
-      "cost_estimate": 30,
-      "location": "1 Austin Terrace, Toronto",
-      "durationMinutes": 120,
-      "tags": [
-        "History",
-        "Architecture",
-        "Garden"
-      ]
-    },
-    {
-      "id": "sug-activity-2",
-      "title": "High Park",
-      "description": "Large urban park perfect for outdoor activities & cherry blossoms.",
-      "category": "Adventure",
-      "cost_estimate": 0,
-      "location": "1873 Bloor St W, Toronto",
-      "durationMinutes": 180,
-      "tags": [
-        "Nature",
-        "Outdoors",
-        "Free"
-      ]
-    },
-    {
-      "id": "sug-activity-3",
-      "title": "Distillery District",
-      "description": "Historic area with art galleries, boutiques, and restaurants.",
-      "category": "Relaxation",
-      "cost_estimate": 0,
-      "location": "Toronto",
-      "durationMinutes": 120,
-      "tags": [
-        "Shopping",
-        "History",
-        "Walkable"
-      ]
-    },
-    {
-      "id": "sug-stay-1",
-      "hotelName": "The Ritz-Carlton",
-      "description": "Luxury hotel with a view of the CN Tower.",
-      "rating": 4.8,
-      "pricePerNight": 600,
-      "address": "181 Wellington St W, Toronto",
-      "category": "Hotel",
-      "imageGallery": [
-        "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500"
-      ],
-      "amenities": [
-        "Spa",
-        "Pool",
-        "Luxury Dining"
-      ],
-      "tags": [
-        "Luxury",
-        "Spa",
-        "Central"
-      ]
-    },
-    {
-      "id": "sug-stay-2",
-      "hotelName": "Drake Hotel",
-      "description": "Trendy boutique hotel in the heart of Queen West.",
-      "rating": 4.4,
-      "pricePerNight": 250,
-      "address": "1150 Queen St W, Toronto",
-      "category": "Accommodation",
-      "imageGallery": [
-        "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=500"
-      ],
-      "amenities": [
-        "Rooftop Bar",
-        "Live Music"
-      ],
-      "tags": [
-        "Boutique",
-        "Trendy",
-        "Nightlife"
-      ]
-    },
-    {
-      "id": "sug-event-1",
-      "title": "TIFF - Toronto International Film Festival",
-      "description": "World-renowned film festival held annually in September.",
-      "category": "Festival",
-      "cost_estimate": 50,
-      "location": "TIFF Bell Lightbox",
-      "durationMinutes": 180,
-      "tags": [
-        "Culture",
-        "Cinema",
-        "Social"
-      ]
-    },
-    {
-      "id": "sug-event-2",
-      "title": "Live Jazz at The Rex",
-      "description": "Iconic jazz and blues bar with nightly live performances.",
-      "category": "Event",
-      "cost_estimate": 20,
-      "location": "194 Queen St W, Toronto",
-      "durationMinutes": 120,
-      "tags": [
-        "Music",
-        "Nightlife",
-        "Live"
-      ]
-    }
-  ]
+  "suggestions": []
 }

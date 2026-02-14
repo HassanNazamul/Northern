@@ -195,6 +195,8 @@ export const useDragAndDrop = () => {
                         cost_estimate: activeDragItem.cost_estimate || 0,
                         category: activeDragItem.category || 'Sightseeing',
                         durationMinutes: activeDragItem.durationMinutes || 120,
+                        type: 'activity',
+                        status: 'planned'
                     };
 
                     dispatch(addActivity({

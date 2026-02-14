@@ -21,13 +21,13 @@ export const AddDayButton: React.FC = () => {
             whileTap={{ scale: 0.98 }}
             onClick={handleClick}
             className="w-full h-full min-h-[400px] flex flex-col items-center justify-center 
-                       border-2 border-dashed border-slate-300 dark:border-slate-700 
-                       rounded-2xl text-slate-400 dark:text-slate-500
-                       hover:border-blue-500/50 hover:text-blue-500 
+                       border-2 border-dashed border-slate-300 dark:border-white/30 
+                       rounded-2xl text-slate-400 dark:text-white/70
+                       hover:border-blue-500/50 hover:text-blue-500 dark:hover:border-primary-a30 dark:hover:text-primary-a30
                        transition-colors duration-200 group bg-transparent"
         >
-            <div className="p-4 rounded-full bg-slate-100 dark:bg-slate-800 
-                          group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 
+            <div className="p-4 rounded-full bg-slate-100 dark:bg-white/10 
+                          group-hover:bg-blue-100 dark:group-hover:bg-primary-a30/20 
                           mb-4 transition-colors duration-200">
                 <Plus className="w-8 h-8" />
             </div>
