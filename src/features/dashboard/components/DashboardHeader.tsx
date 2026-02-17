@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useClickOutside } from '../../../hooks/useClickOutside';
 import {
     ChevronLeft,
@@ -8,7 +9,8 @@ import {
     Save,
     Globe,
     MoreVertical,
-    Layers
+    Layers,
+    LayoutGrid
 } from 'lucide-react';
 import { CollaboratorGroup } from './CollaboratorGroup';
 
@@ -27,6 +29,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 }) => {
     const [showMoreMenu, setShowMoreMenu] = useState(false);
     const optionsRef = useRef<HTMLDivElement>(null);
+    const navigate = useNavigate();
 
     useClickOutside(optionsRef, () => setShowMoreMenu(false));
 
@@ -73,13 +76,13 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 {/* Action Toolbar */}
                 <div className="flex items-center gap-2">
                     {/* Invite Button */}
-                    <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white/40 dark:bg-surface-a10 border border-white/50 dark:border-surface-a30 rounded-lg hover:bg-white/60 dark:hover:bg-surface-a20 hover:shadow-sm transition-all hover:text-gray-900 dark:hover:text-white">
+                    <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white/40 dark:bg-surface-a10 border border-white/50 dark:border-surface-a30 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-200 dark:hover:border-purple-800 hover:shadow-sm transition-all hover:text-purple-700 dark:hover:text-purple-300">
                         <UserPlus className="h-4 w-4" />
                         <span className="hidden sm:inline">Invite</span>
                     </button>
 
                     {/* Save Button */}
-                    <button className="p-2 text-gray-700 dark:text-gray-200 bg-white/40 dark:bg-surface-a10 border border-white/50 dark:border-surface-a30 rounded-lg hover:bg-white/60 dark:hover:bg-surface-a20 hover:shadow-sm transition-all hover:text-gray-900 dark:hover:text-white" title="Save Trip">
+                    <button className="p-2 text-gray-700 dark:text-gray-200 bg-white/40 dark:bg-surface-a10 border border-white/50 dark:border-surface-a30 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-200 dark:hover:border-purple-800 hover:shadow-sm transition-all hover:text-purple-700 dark:hover:text-purple-300" title="Save Trip">
                         <Save className="h-4 w-4" />
                     </button>
 
@@ -94,13 +97,13 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
                         {showMoreMenu && (
                             <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-surface-a0 rounded-xl shadow-xl border border-slate-100 dark:border-surface-a10 py-1 z-50 animate-in fade-in zoom-in-95 duration-200">
-                                <button className="w-full text-left px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-surface-a10 flex items-center gap-2 transition-colors">
+                                <button className="w-full text-left px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 flex items-center gap-2 transition-colors">
                                     <Globe className="h-4 w-4" /> Publish
                                 </button>
-                                <button className="w-full text-left px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-surface-a10 flex items-center gap-2 transition-colors">
+                                <button className="w-full text-left px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 flex items-center gap-2 transition-colors">
                                     <Layers className="h-4 w-4" /> Add to Calendar
                                 </button>
-                                <button className="w-full text-left px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-surface-a10 flex items-center gap-2 transition-colors">
+                                <button className="w-full text-left px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 flex items-center gap-2 transition-colors">
                                     <Mail className="h-4 w-4" /> Share via Email
                                 </button>
                                 <div className="my-1 border-t border-gray-100/50 dark:border-surface-a10"></div>
@@ -110,12 +113,19 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                                 >
                                     <ChevronLeft className="h-4 w-4" /> New Trip
                                 </button>
+                                <div className="my-1 border-t border-gray-100/50 dark:border-surface-a10"></div>
+                                <button
+                                    onClick={() => navigate('/gallery')}
+                                    className="w-full text-left px-4 py-2.5 text-sm text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 flex items-center gap-2 transition-colors font-medium"
+                                >
+                                    <LayoutGrid className="h-4 w-4" /> View Gallery
+                                </button>
                             </div>
                         )}
                     </div>
 
                 </div>
             </div>
-        </div>
+        </div >
     );
 };

@@ -62,6 +62,7 @@ export const DragOverlayContent: React.FC<DragOverlayContentProps> = ({
                         <div className="w-[320px] h-[700px] opacity-90 rotate-2 cursor-grabbing">
                             <DayCard
                                 dayPlan={activeDragItem}
+                                dayIndex={activeDragItem.dayNumber - 1} // Fix: Pass derived index
                                 onSelectActivity={() => { }}
                                 onSelectAccommodation={() => { }}
                                 onAutoSuggestAccommodation={() => { }}
