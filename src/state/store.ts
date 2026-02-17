@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import dashboardReducer from './slices/dashboardSlice';
 import discoveryReducer from './slices/discoverySlice';
+import userReducer from './slices/userSlice';
 
 export const store = configureStore({
     reducer: {
         dashboard: dashboardReducer,
         discovery: discoveryReducer,
+        user: userReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

@@ -1,59 +1,34 @@
 import React, { useState } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { LandingPage } from '@features/landing';
 import { Dashboard } from '@features/dashboard';
-import { TripState, TripGenerationRequest } from '@types';
-import { createTrip } from '@services/api';
-import { setItinerary, setTripState, resetDashboard } from './state/slices/dashboardSlice';
+import LoginPage from './pages/LoginPage';
+import GalleryPage from './pages/GalleryPage';
+import { TripState } from '@types';
+import { fetchItinerary, setTripState, resetDashboard } from './state/slices/dashboardSlice';
 import { useAppDispatch } from './state';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const [view, setView] = useState<'landing' | 'dashboard'>('landing');
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   // -- API Integration --
-  const handleGenerate = async (tripState: TripState) => {
+  // Fetches the persistent itinerary from the backend (or JSON server)
+  const handleGenerate = async (trip: TripState) => {
     setLoading(true);
-    dispatch(setTripState(tripState));
+    dispatch(setTripState(trip));
 
     try {
-      // Map TripState to TripGenerationRequest
-      const request: TripGenerationRequest = {
-        destination: {
-          city: tripState.destination,
-          // We could add country/coordinates if TripState had them or via geocoding
-        },
-        dates: {
-          startDate: tripState.startDate,
-          endDate: tripState.endDate,
-        },
-        travelers: {
-          count: tripState.travelers || 1, // Default to 1 if not in TripState
-          type: 'friends' // Default or derive from TripState if added
-        },
-        budget: {
-          amount: tripState.budget,
-          currency: 'CAD', // Default
-          level: 'moderate' // Default or derive
-        },
-        preferences: {
-          theme: tripState.vibe,
-          interests: [] // Populate if TripState has interests
-        }
-      };
-
-      console.log("Generating trip with request:", request);
-
-      // Call the Mock API to generate (or fetch mock) trip
-      const newTrip = await createTrip(request);
-
-      // Update Redux state with the new trip
-      dispatch(setItinerary(newTrip));
-
-      setView('dashboard');
+      // Fetch the 'current' trip from the persistent backend
+      // In dev mode, this hits port 3001 (db.json)
+      await dispatch(fetchItinerary('current')).unwrap();
+      navigate('/dashboard');
     } catch (err) {
       console.error("Itinerary generation failed", err);
-      alert("Failed to generate itinerary. Ensure json-server is running (port 3001) for mock data.");
+      // Fallback or alert
+      // alert("Failed to load itinerary. Ensure json-server is running (port 3001).");
+      // navigate('/dashboard'); // Uncomment if we want to allow navigation even on error
     } finally {
       setLoading(false);
     }
@@ -61,13 +36,16 @@ const App: React.FC = () => {
 
   const reset = () => {
     dispatch(resetDashboard());
-    setView('landing');
+    navigate('/');
   };
 
-  return view === 'landing' ? (
-    <LandingPage onGenerate={handleGenerate} loading={loading} />
-  ) : (
-    <Dashboard onReset={reset} />
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage onGenerate={handleGenerate} loading={loading} />} />
+      <Route path="/dashboard" element={<Dashboard onReset={reset} />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/gallery" element={<GalleryPage />} />
+    </Routes>
   );
 };
 

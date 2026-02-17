@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { Trip, DayPlan, Activity, Accommodation, TripState } from '@types';
+import { Trip, DayPlan, Activity, Accommodation, TripState, TripVibe } from '@types';
 import { recalculateDayTimeline } from '@features/dashboard/utils';
-import { getTrip } from '@services/api';
+import { getTrip, getAllTrips } from '@services/api';
 import { RootState } from '../store';
 
 // -- Async Thunks --
@@ -14,6 +14,15 @@ export const fetchItinerary = createAsyncThunk(
         if (!trip) throw new Error('Trip not found');
         console.log('Itinerary received:', trip);
         return trip;
+    }
+);
+
+// Fetch all saved trips for the gallery
+export const fetchSavedTrips = createAsyncThunk(
+    'dashboard/fetchSavedTrips',
+    async () => {
+        const trips = await getAllTrips();
+        return trips;
     }
 );
 
@@ -45,6 +54,7 @@ interface DashboardState {
     itinerary: Trip | null;
     // Stores trip settings like budget, destination, and travelers
     tripState: TripState | null;
+    savedTrips: Trip[]; // List of all saved trips
 
     // -- Trash Bin -- 
     trashBin: TrashItem[];
@@ -70,6 +80,7 @@ const initialState: DashboardState = {
     error: null,
     itinerary: null,
     tripState: null,
+    savedTrips: [],
     trashBin: [],
     dragState: {
         activeId: null,
@@ -475,10 +486,37 @@ const dashboardSlice = createSlice({
             .addCase(fetchItinerary.fulfilled, (state, action) => {
                 state.loading = false;
                 state.itinerary = action.payload;
+
+                // Derive TripState from the fetched Trip to ensure Dashboard renders
+                if (action.payload.itinerary.length > 0) {
+                    const firstDay = action.payload.itinerary[0];
+                    const lastDay = action.payload.itinerary[action.payload.itinerary.length - 1];
+
+                    state.tripState = {
+                        destination: action.payload.trip_title.replace('Mock ', '').replace(' Adventure', '').replace(' Escape', '').replace(' Cultural', ''), // Simple cleanup
+                        startDate: firstDay.date || new Date().toISOString().split('T')[0],
+                        endDate: lastDay.date || new Date().toISOString().split('T')[0],
+                        vibe: TripVibe.RELAX, // Default or derive if added to DB
+                        budget: 1000, // Default or derive
+                        travelers: 2 // Default
+                    };
+                }
             })
             .addCase(fetchItinerary.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message || 'Failed to fetch itinerary';
+            })
+            // Fetch Saved Trips
+            .addCase(fetchSavedTrips.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(fetchSavedTrips.fulfilled, (state, action) => {
+                state.loading = false;
+                state.savedTrips = action.payload;
+            })
+            .addCase(fetchSavedTrips.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message || 'Failed to fetch saved trips';
             });
     }
 });

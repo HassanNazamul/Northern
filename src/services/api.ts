@@ -23,6 +23,20 @@ export const getTrip = async (tripId: string = 'trp_current'): Promise<Trip | nu
 };
 
 /**
+ * Fetch all saved trips.
+ */
+export const getAllTrips = async (): Promise<Trip[]> => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/trips`);
+        if (!response.ok) throw new Error('Failed to fetch trips');
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching all trips:', error);
+        return [];
+    }
+};
+
+/**
  * Mock creating a trip. 
  * In reality, this would POST to the backend.
  * Here, we'll just return the existing mock trip to simulate a successful generation.

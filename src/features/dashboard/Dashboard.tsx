@@ -178,10 +178,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
-              className="absolute -top-[10%] -left-[10%] w-[800px] h-[800px] bg-blue-500 rounded-full blur-[120px] mix-blend-multiply"
+              className="absolute -top-[10%] -left-[10%] w-[800px] h-[800px] bg-blue-600 rounded-full blur-[120px] mix-blend-multiply"
             />
 
-            {/* Soft Orange Blob - Bottom Right */}
+            {/* Soft Purple Blob - Bottom Right */}
             <motion.div
               animate={{
                 scale: [1, 1.1, 1],
@@ -195,7 +195,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
                 ease: "easeInOut",
                 delay: 2
               }}
-              className="absolute -bottom-[20%] -right-[10%] w-[600px] h-[600px] bg-orange-400 rounded-full blur-[100px] mix-blend-multiply"
+              className="absolute -bottom-[20%] -right-[10%] w-[600px] h-[600px] bg-purple-600 rounded-full blur-[100px] mix-blend-multiply"
             />
           </div>
           {/* Top Bar */}
