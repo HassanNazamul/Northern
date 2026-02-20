@@ -9,7 +9,6 @@ export const AddDayButton: React.FC = () => {
 
     const handleClick = () => {
         dispatch(addDay());
-        dispatch(persistItinerary());
     };
 
     return (

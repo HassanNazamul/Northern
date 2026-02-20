@@ -10,22 +10,25 @@ import {
     Globe,
     MoreVertical,
     Layers,
-    LayoutGrid
+    LayoutGrid,
+    Trash2
 } from 'lucide-react';
 import { CollaboratorGroup } from './CollaboratorGroup';
 
 interface DashboardHeaderProps {
     destination: string;
-    onReset: () => void;
+    onDelete: () => void;
     sidebarOpen: boolean;
     onSidebarToggle: () => void;
+    onSave?: () => void;
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     destination,
-    onReset,
+    onDelete,
     sidebarOpen,
     onSidebarToggle,
+    onSave,
 }) => {
     const [showMoreMenu, setShowMoreMenu] = useState(false);
     const optionsRef = useRef<HTMLDivElement>(null);
@@ -82,7 +85,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     </button>
 
                     {/* Save Button */}
-                    <button className="p-2 text-gray-700 dark:text-gray-200 bg-white/40 dark:bg-surface-a10 border border-white/50 dark:border-surface-a30 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-200 dark:hover:border-purple-800 hover:shadow-sm transition-all hover:text-purple-700 dark:hover:text-purple-300" title="Save Trip">
+                    <button
+                        onClick={onSave}
+                        className="p-2 text-gray-700 dark:text-gray-200 bg-white/40 dark:bg-surface-a10 border border-white/50 dark:border-surface-a30 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-200 dark:hover:border-purple-800 hover:shadow-sm transition-all hover:text-purple-700 dark:hover:text-purple-300"
+                        title="Save Trip"
+                    >
                         <Save className="h-4 w-4" />
                     </button>
 
@@ -108,10 +115,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                                 </button>
                                 <div className="my-1 border-t border-gray-100/50 dark:border-surface-a10"></div>
                                 <button
-                                    onClick={onReset}
+                                    onClick={onDelete}
                                     className="w-full text-left px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2 transition-colors"
                                 >
-                                    <ChevronLeft className="h-4 w-4" /> New Trip
+                                    <Trash2 className="h-4 w-4" /> Delete Trip
                                 </button>
                                 <div className="my-1 border-t border-gray-100/50 dark:border-surface-a10"></div>
                                 <button

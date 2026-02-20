@@ -27,8 +27,15 @@ export const AccommodationFormModal: React.FC<AccommodationFormModalProps> = ({ 
     // Validates and saves the accommodation data.
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Validation could go here
-        onSave(formData as Accommodation);
+
+        const newAccommodation: Accommodation = {
+            ...formData,
+            id: crypto.randomUUID(),
+            bookingStatus: 'draft',
+            type: formData.type || 'hotel'
+        } as Accommodation;
+
+        onSave(newAccommodation);
         onClose();
     };
 

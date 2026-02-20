@@ -1,5 +1,6 @@
 import React from 'react';
 import { DndContext, rectIntersection, MeasuringStrategy } from '@dnd-kit/core';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronLeft, PanelLeftOpen } from 'lucide-react';
 import { Activity, Accommodation } from '@types';
@@ -20,8 +21,11 @@ import {
   AccommodationFormModal,
   ActivityFormModal,
   DashboardHeader,
+  DeleteConfirmationModal,
   TrashBin
 } from './components';
+import { deleteTrip, updateTrip } from '@services/api';
+import { selectUserEmail } from '@state/selectors';
 
 interface DashboardProps {
   onReset: () => void;
@@ -41,6 +45,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
   // Smart Restore State
   const selectedDayId = useAppSelector(state => state.dashboard.selectedDayId);
   const trashBinOpen = useAppSelector(state => state.dashboard.trashBinOpen);
+  const email = useAppSelector(selectUserEmail);
+  const navigate = useNavigate();
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
+  const [isDeleting, setIsDeleting] = React.useState(false);
 
   // Early return if no data
   if (!itinerary || !tripState) {
@@ -114,6 +123,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
     }
   };
 
+  const handleSave = () => {
+    if (itinerary) {
+      console.log('--- SAVING ITINERARY ---');
+      console.log(JSON.stringify(itinerary, null, 2));
+      console.log('------------------------');
+      dispatch(persistItinerary());
+    }
+  };
+
   const handleGetAccommodation = async (dayId: string) => {
     try {
       const day = itinerary.itinerary.find(d => d.id === dayId);
@@ -124,6 +142,21 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
       dispatch(setAccommodationAction({ dayId, accommodation: accom }));
     } catch (err) {
       console.error('Failed to get accommodation', err);
+    }
+  };
+
+  const handleDeleteTrip = async () => {
+    if (!itinerary || !email) return;
+
+    setIsDeleting(true);
+    const success = await deleteTrip(itinerary.id, email);
+    setIsDeleting(false);
+
+    if (success) {
+      setIsDeleteModalOpen(false);
+      navigate('/gallery');
+    } else {
+      alert('Failed to delete trip. Please try again.');
     }
   };
 
@@ -202,9 +235,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
           {/* Top Bar - Refactored into DashboardHeader */}
           <DashboardHeader
             destination={tripState.destination}
-            onReset={onReset}
+            onDelete={() => setIsDeleteModalOpen(true)}
             sidebarOpen={sidebarOpen}
             onSidebarToggle={() => dispatch(setSidebarOpen(!sidebarOpen))}
+            onSave={handleSave}
           />
 
           {/* Canvas Area - Flexible & Contained */}
@@ -225,7 +259,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
               onManualAccommodation={(dayId) => setManualAccommodationDayId(dayId)}
               onAddActivity={(dayId) => {
                 const newActivity: Activity = {
-                  id: `activity-${Date.now()}`,
+                  id: self.crypto.randomUUID(),
                   title: '',
                   description: 'New Activity',
                   time: 'TBD',
@@ -334,6 +368,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
           onSave={handleSaveManualActivity}
         />
       </div>
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteTrip}
+        isDeleting={isDeleting}
+      />
+
     </DndContext>
   );
 };

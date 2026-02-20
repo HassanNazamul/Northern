@@ -46,7 +46,6 @@ export const SortableActivityItem: React.FC<SortableActivityItemProps> = ({ acti
                 isDraft: false
             }
         }));
-        dispatch(persistItinerary());
     };
 
     const style = {

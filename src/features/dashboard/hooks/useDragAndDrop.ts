@@ -130,7 +130,7 @@ export const useDragAndDrop = () => {
                         oldIndex,
                         newIndex: insertionIndex,
                     }));
-                    dispatch(persistItinerary());
+                    // Removed persistItinerary calls to prevent autosave
                 } else {
                     dispatch(dragCancel());
                 }
@@ -143,7 +143,7 @@ export const useDragAndDrop = () => {
                     activityId: active.id as string,
                     targetIndex: insertionIndex,
                 }));
-                dispatch(persistItinerary());
+                // Removed persistItinerary calls to prevent autosave
             }
         }
 
@@ -155,7 +155,7 @@ export const useDragAndDrop = () => {
             if (oldIdx !== -1 && newIdx !== -1 && oldIdx !== newIdx) {
                 // Use swap instead of reorder to directly exchange positions
                 dispatch(swapDays({ index1: oldIdx, index2: newIdx }));
-                dispatch(persistItinerary());
+                // Removed persistItinerary calls to prevent autosave
             } else {
                 dispatch(dragCancel());
             }
@@ -204,7 +204,7 @@ export const useDragAndDrop = () => {
                         activity: newActivity,
                         insertionIndex,
                     }));
-                    dispatch(persistItinerary());
+                    // Removed persistItinerary calls to prevent autosave
                 }
             } else {
                 dispatch(dragCancel());
@@ -225,7 +225,7 @@ export const useDragAndDrop = () => {
                     dayId: targetDayId,
                     accommodation: activeDragItem,
                 }));
-                dispatch(persistItinerary());
+                // Removed persistItinerary calls to prevent autosave
             } else {
                 dispatch(dragCancel());
             }

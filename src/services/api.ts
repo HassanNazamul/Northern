@@ -86,3 +86,47 @@ export const getSuggestions = async (context: any): Promise<Suggestion[]> => {
     const trip = await getTrip('trp_current');
     return trip?.sidebar_suggestions || [];
 }
+
+/**
+ * Update a trip on the backend.
+ */
+export const updateTrip = async (trip: Trip, email: string): Promise<Trip | null> => {
+    try {
+        const response = await fetch(`${REAL_API_BASE}/trips/${trip.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-User-Email': email
+            },
+            body: JSON.stringify(trip)
+        });
+
+        if (!response.ok) throw new Error(`Failed to update trip: ${response.statusText}`);
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error updating trip:', error);
+        return null;
+    }
+};
+
+/**
+ * Delete a trip from the backend.
+ */
+export const deleteTrip = async (tripId: string, email: string): Promise<boolean> => {
+    try {
+        const response = await fetch(`${REAL_API_BASE}/trips/${tripId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-User-Email': email
+            }
+        });
+
+        if (!response.ok) throw new Error(`Failed to delete trip: ${response.statusText}`);
+
+        return true;
+    } catch (error) {
+        console.error('Error deleting trip:', error);
+        return false;
+    }
+};

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Trip, DayPlan, Activity, Accommodation, TripState, TripVibe } from '@types';
 import { recalculateDayTimeline } from '@features/dashboard/utils';
-import { getTrip, getAllTrips } from '@services/api';
+import { getTrip, getAllTrips, updateTrip } from '@services/api';
 import { RootState } from '../store';
 
 // -- Async Thunks --
@@ -30,14 +30,43 @@ export const fetchSavedTrips = createAsyncThunk(
     }
 );
 
-// Persist stub - in a real app this would call api.updateTrip or similar
+// Persist itinerary to backend - filters empty days and renumbers sequentially
 export const persistItinerary = createAsyncThunk(
     'dashboard/persistItinerary',
     async (_, { getState }) => {
         const state = getState() as RootState;
-        const itinerary = state.dashboard.itinerary;
-        if (!itinerary) return;
-        console.log('Persisting itinerary (stub):', itinerary);
+        const currentItinerary = state.dashboard.itinerary;
+        const email = state.user.email;
+
+        if (!currentItinerary || !email) {
+            console.error('Missing itinerary or email for persistence');
+            return null;
+        }
+
+        // 1. Filter out days with no activities and no accommodation
+        const filteredDays = currentItinerary.itinerary.filter(day =>
+            day.activities.length > 0 || !!day.accommodation
+        );
+
+        // 2. Renumber remaining days sequentially
+        const cleanedItinerary = {
+            ...currentItinerary,
+            itinerary: filteredDays.map((day, index) => ({
+                ...day,
+                dayNumber: index + 1
+            })),
+            total_days: filteredDays.length
+        };
+
+        console.log('Persisting cleaned itinerary to backend:', cleanedItinerary);
+        const updatedTrip = await updateTrip(cleanedItinerary, email);
+
+        if (!updatedTrip) {
+            throw new Error('Failed to update trip on backend');
+        }
+
+        console.log('Successfully persisted itinerary:', updatedTrip);
+        return updatedTrip;
     }
 );
 
@@ -295,7 +324,7 @@ const dashboardSlice = createSlice({
             if (!state.itinerary) return;
             const newDayNum = state.itinerary.itinerary.length + 1;
             const newDay: DayPlan = {
-                id: `day-${Date.now()}`,
+                id: self.crypto.randomUUID(),
                 tripId: state.itinerary.id,
                 dayNumber: newDayNum,
                 theme: 'New Day',
@@ -521,6 +550,12 @@ const dashboardSlice = createSlice({
             .addCase(fetchSavedTrips.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message || 'Failed to fetch saved trips';
+            })
+            // Persist Itinerary
+            .addCase(persistItinerary.fulfilled, (state, action) => {
+                if (action.payload) {
+                    state.itinerary = action.payload;
+                }
             });
     }
 });
