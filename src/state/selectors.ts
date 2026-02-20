@@ -30,3 +30,6 @@ export {
 } from './slices/discoverySlice';
 
 export const selectDiscoveryError = (state: RootState) => state.discovery.error;
+
+// User Selectors
+export const selectUserEmail = (state: RootState) => state.user.email;

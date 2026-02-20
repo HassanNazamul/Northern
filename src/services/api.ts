@@ -1,21 +1,36 @@
 import { Trip, TripGenerationRequest, Suggestion } from '../types';
 
-const API_BASE_URL = 'http://localhost:3001';
+const MOCK_API_BASE = 'http://localhost:3001';
+const REAL_API_BASE = 'http://localhost:8080/api';
 
 /**
  * Fetch the current trip (or a specific trip by ID).
  */
-export const getTrip = async (tripId: string = 'trp_current'): Promise<Trip | null> => {
+export const getTrip = async (tripId: string = 'trp_current', email?: string | null): Promise<Trip | null> => {
     try {
-        // In a real app, this would be /trips/${tripId}
-        // For json-server, we might need to filter if the structure is flat, 
-        // but our db.json has a "trips" array.
-        const response = await fetch(`${API_BASE_URL}/trips`);
-        if (!response.ok) throw new Error('Failed to fetch trips');
+        const isMock = tripId === 'trp_current' || tripId === 'current';
+        const url = isMock
+            ? `${MOCK_API_BASE}/trips`
+            : `${REAL_API_BASE}/trips/${tripId}`;
 
-        const trips: Trip[] = await response.json();
-        const trip = trips.find(t => t.id === tripId || t.id === 'trp_' + tripId) || trips[0];
-        return trip || null;
+        const headers: HeadersInit = {};
+        if (!isMock && email) {
+            headers['X-User-Email'] = email;
+        }
+
+        const response = await fetch(url, { headers });
+        if (!response.ok) throw new Error(`Failed to fetch trip: ${response.statusText}`);
+
+        const result = await response.json();
+
+        // json-server returns an array for /trips, but the real backend should return a single object for /trips/{id}
+        if (isMock) {
+            const trips: Trip[] = result;
+            const trip = trips.find(t => t.id === tripId || t.id === 'trp_' + tripId) || trips[0];
+            return trip || null;
+        }
+
+        return result;
     } catch (error) {
         console.error('Error fetching trip:', error);
         return null;
@@ -25,10 +40,15 @@ export const getTrip = async (tripId: string = 'trp_current'): Promise<Trip | nu
 /**
  * Fetch all saved trips.
  */
-export const getAllTrips = async (): Promise<Trip[]> => {
+export const getAllTrips = async (email?: string | null): Promise<Trip[]> => {
     try {
-        const response = await fetch(`${API_BASE_URL}/trips`);
-        if (!response.ok) throw new Error('Failed to fetch trips');
+        const headers: HeadersInit = {};
+        if (email) {
+            headers['X-User-Email'] = email;
+        }
+
+        const response = await fetch(`${REAL_API_BASE}/trips`, { headers });
+        if (!response.ok) throw new Error('Failed to fetch trips from real backend');
         return await response.json();
     } catch (error) {
         console.error('Error fetching all trips:', error);
@@ -62,6 +82,7 @@ export const getSuggestions = async (context: any): Promise<Suggestion[]> => {
     await new Promise(resolve => setTimeout(resolve, 800));
 
     // Return hardcoded suggestions or fetch from db.json sidebar_suggestions
+    // We always use the mock trip for suggestions as requested
     const trip = await getTrip('trp_current');
     return trip?.sidebar_suggestions || [];
 }

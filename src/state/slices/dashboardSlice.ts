@@ -8,9 +8,11 @@ import { RootState } from '../store';
 // Uses the centralized API service to fetch data
 export const fetchItinerary = createAsyncThunk(
     'dashboard/fetchItinerary',
-    async (tripId: string = 'current') => {
-        console.log(`Fetching itinerary for ${tripId} from backend...`);
-        const trip = await getTrip(tripId);
+    async (tripId: string = 'current', { getState }) => {
+        const state = getState() as RootState;
+        const email = state.user.email;
+        console.log(`Fetching itinerary for ${tripId} (User: ${email}) from backend...`);
+        const trip = await getTrip(tripId, email);
         if (!trip) throw new Error('Trip not found');
         console.log('Itinerary received:', trip);
         return trip;
@@ -20,8 +22,10 @@ export const fetchItinerary = createAsyncThunk(
 // Fetch all saved trips for the gallery
 export const fetchSavedTrips = createAsyncThunk(
     'dashboard/fetchSavedTrips',
-    async () => {
-        const trips = await getAllTrips();
+    async (_, { getState }) => {
+        const state = getState() as RootState;
+        const email = state.user.email;
+        const trips = await getAllTrips(email);
         return trips;
     }
 );
