@@ -23,6 +23,13 @@ export interface TripState {
     travelers: number;
 }
 
+export interface Collaborator {
+    email: string;
+    id: string;
+    role: 'EDITOR' | 'VIEWER';
+    status: 'PENDING' | 'ACCEPTED' | 'DECLINED';
+}
+
 export interface Trip {
     id: string; // e.g., 'trp_...'
     trip_title: string;
@@ -30,6 +37,10 @@ export interface Trip {
     currency: string;
     itinerary: DayPlan[];
     sidebar_suggestions: Suggestion[];
+    location?: string; // Optinal location for UI
+    image_url?: string; // Optional image URL for UI
+    last_edited?: string; // Friendly date like "2d ago"
+    collaborators?: Collaborator[];
     externalSync?: {
         googleCalendar?: {
             lastSyncedAt: string;

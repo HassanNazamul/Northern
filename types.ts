@@ -82,6 +82,13 @@ export interface Suggestion {
   description: string;
 }
 
+export interface Collaborator {
+  email: string;
+  id: string;
+  role: 'EDITOR' | 'VIEWER';
+  status: 'PENDING' | 'ACCEPTED' | 'DECLINED';
+}
+
 export interface Trip {
   id: string; // e.g., 'trp_...'
   trip_title: string;
@@ -89,6 +96,7 @@ export interface Trip {
   currency: string;
   itinerary: DayPlan[];
   sidebar_suggestions: Suggestion[];
+  collaborators?: Collaborator[]; // Optional collaborators field
   externalSync?: {
     googleCalendar?: {
       lastSyncedAt: string;

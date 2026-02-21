@@ -130,3 +130,59 @@ export const deleteTrip = async (tripId: string, email: string): Promise<boolean
         return false;
     }
 };
+
+/**
+ * Invite a user to a trip.
+ */
+export const inviteUserToTrip = async (tripId: string, invitedEmail: string): Promise<boolean> => {
+    try {
+        const response = await fetch(`${REAL_API_BASE}/trips/${tripId}/invite`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ invitedEmail })
+        });
+
+        if (!response.ok) throw new Error(`Failed to invite user: ${response.statusText}`);
+
+        return true;
+    } catch (error) {
+        console.error('Error inviting user:', error);
+        return false;
+    }
+};
+
+/**
+ * Fetch trip invitations for a user (GET).
+ */
+export const getTripInvitations = async (email: string): Promise<any[]> => {
+    try {
+        const response = await fetch(`${REAL_API_BASE}/trips/invitations?email=${email}`, {
+            headers: {
+                'X-User-Email': email
+            }
+        });
+        if (!response.ok) throw new Error(`Failed to fetch invitations: ${response.statusText}`);
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching invitations:', error);
+        return [];
+    }
+};
+
+/**
+ * Respond to a trip invitation (ACCEPT or DECLINE).
+ */
+export const respondToInvitation = async (tripId: string, email: string, action: 'ACCEPT' | 'DECLINE'): Promise<boolean> => {
+    try {
+        const response = await fetch(`${REAL_API_BASE}/trips/${tripId}/respond?email=${email}&action=${action}`, {
+            method: 'PUT'
+        });
+        if (!response.ok) throw new Error(`Failed to respond to invitation: ${response.statusText}`);
+        return true;
+    } catch (error) {
+        console.error('Error responding to invitation:', error);
+        return false;
+    }
+};

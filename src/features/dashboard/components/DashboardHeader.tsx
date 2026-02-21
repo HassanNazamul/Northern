@@ -21,6 +21,7 @@ interface DashboardHeaderProps {
     sidebarOpen: boolean;
     onSidebarToggle: () => void;
     onSave?: () => void;
+    onInvite?: (email: string) => Promise<boolean>;
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -29,12 +30,33 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     sidebarOpen,
     onSidebarToggle,
     onSave,
+    onInvite,
 }) => {
     const [showMoreMenu, setShowMoreMenu] = useState(false);
+    const [showInviteDropdown, setShowInviteDropdown] = useState(false);
+    const [inviteEmail, setInviteEmail] = useState('');
+    const [isInviting, setIsInviting] = useState(false);
+
     const optionsRef = useRef<HTMLDivElement>(null);
+    const inviteRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
 
     useClickOutside(optionsRef, () => setShowMoreMenu(false));
+    useClickOutside(inviteRef, () => setShowInviteDropdown(false));
+
+    const handleInviteSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!inviteEmail || !onInvite) return;
+
+        setIsInviting(true);
+        const success = await onInvite(inviteEmail);
+        setIsInviting(false);
+
+        if (success) {
+            setInviteEmail('');
+            setShowInviteDropdown(false);
+        }
+    };
 
     return (
         <div className="flex items-center justify-between px-6 py-4 bg-white/60 dark:bg-[#050505] backdrop-blur-md border-b border-white/20 dark:border-surface-a20 relative z-30 sticky top-0 shadow-sm dark:shadow-md">
@@ -78,11 +100,46 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
                 {/* Action Toolbar */}
                 <div className="flex items-center gap-2">
-                    {/* Invite Button */}
-                    <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white/40 dark:bg-surface-a10 border border-white/50 dark:border-surface-a30 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-200 dark:hover:border-purple-800 hover:shadow-sm transition-all hover:text-purple-700 dark:hover:text-purple-300">
-                        <UserPlus className="h-4 w-4" />
-                        <span className="hidden sm:inline">Invite</span>
-                    </button>
+                    {/* Invite Button & Dropdown */}
+                    <div className="relative" ref={inviteRef}>
+                        <button
+                            onClick={() => setShowInviteDropdown(!showInviteDropdown)}
+                            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/30 hover:shadow-sm transition-all"
+                        >
+                            <UserPlus className="h-4 w-4" />
+                            <span className="hidden sm:inline">Invite</span>
+                        </button>
+
+                        {showInviteDropdown && (
+                            <div className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-surface-a0 rounded-xl shadow-xl border border-slate-100 dark:border-surface-a10 p-4 z-50 animate-in fade-in zoom-in-95 duration-200">
+                                <h3 className="text-sm font-bold text-slate-800 dark:text-white mb-3">Invite Collaborators</h3>
+                                <form onSubmit={handleInviteSubmit} className="space-y-3">
+                                    <input
+                                        type="email"
+                                        placeholder="Enter email address"
+                                        value={inviteEmail}
+                                        onChange={(e) => setInviteEmail(e.target.value)}
+                                        required
+                                        className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-surface-a10 border border-slate-200 dark:border-surface-a20 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all dark:text-white"
+                                    />
+                                    <button
+                                        type="submit"
+                                        disabled={isInviting || !inviteEmail}
+                                        className="w-full py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white rounded-lg text-sm font-bold shadow-md shadow-purple-500/20 transition-all flex items-center justify-center gap-2"
+                                    >
+                                        {isInviting ? (
+                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                        ) : (
+                                            <>
+                                                <Mail className="h-4 w-4" />
+                                                Send Invite
+                                            </>
+                                        )}
+                                    </button>
+                                </form>
+                            </div>
+                        )}
+                    </div>
 
                     {/* Save Button */}
                     <button

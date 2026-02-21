@@ -24,7 +24,7 @@ import {
   DeleteConfirmationModal,
   TrashBin
 } from './components';
-import { deleteTrip, updateTrip } from '@services/api';
+import { deleteTrip, updateTrip, inviteUserToTrip } from '@services/api';
 import { selectUserEmail } from '@state/selectors';
 
 interface DashboardProps {
@@ -156,10 +156,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
       setIsDeleteModalOpen(false);
       navigate('/gallery');
     } else {
-      alert('Failed to delete trip. Please try again.');
     }
   };
 
+  const handleInviteUser = async (invitedEmail: string) => {
+    if (!itinerary) return false;
+    return await inviteUserToTrip(itinerary.id, invitedEmail);
+  };
 
   return (
     <DndContext
@@ -239,6 +242,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
             sidebarOpen={sidebarOpen}
             onSidebarToggle={() => dispatch(setSidebarOpen(!sidebarOpen))}
             onSave={handleSave}
+            onInvite={handleInviteUser}
           />
 
           {/* Canvas Area - Flexible & Contained */}
