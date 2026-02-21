@@ -157,6 +157,7 @@ const GalleryPage: React.FC = () => {
                     sidebarOpen={sidebarOpen}
                     onSidebarToggle={() => setSidebarOpen(true)}
                     onCreateTrip={() => navigate('/')}
+                    invitationCount={invitations.length}
                 />
 
                 <main className="flex-1 overflow-y-auto p-8 relative z-10">

@@ -1,42 +1,31 @@
-import React, { useState, useRef } from 'react';
-import { useClickOutside } from '../../../hooks/useClickOutside';
+import React from 'react';
 import {
     PanelLeftOpen,
     Plus,
     Search,
-    User,
-    LogOut,
-    Settings
+    User
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../state/store';
 import { useAppDispatch } from '../../../state';
-import { setUser } from '../../../state/slices/userSlice';
 import { useNavigate } from 'react-router-dom';
 
 interface GalleryHeaderProps {
     sidebarOpen: boolean;
     onSidebarToggle: () => void;
     onCreateTrip: () => void;
+    invitationCount: number;
 }
 
 export const GalleryHeader: React.FC<GalleryHeaderProps> = ({
     sidebarOpen,
     onSidebarToggle,
-    onCreateTrip
+    onCreateTrip,
+    invitationCount
 }) => {
-    const [showUserMenu, setShowUserMenu] = useState(false);
-    const userMenuRef = useRef<HTMLDivElement>(null);
     const email = useSelector((state: RootState) => state.user.email);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-
-    useClickOutside(userMenuRef, () => setShowUserMenu(false));
-
-    const handleLogout = () => {
-        dispatch(setUser(null));
-        navigate('/login');
-    };
 
     return (
         <div className="flex items-center justify-between px-6 py-4 bg-white/60 dark:bg-[#050505] backdrop-blur-md border-b border-white/20 dark:border-surface-a20 relative z-30 sticky top-0 shadow-sm dark:shadow-md">
@@ -87,46 +76,22 @@ export const GalleryHeader: React.FC<GalleryHeaderProps> = ({
 
                 <div className="h-6 w-px bg-slate-200 dark:bg-surface-a20 mx-1"></div>
 
-                {/* User Profile */}
-                <div ref={userMenuRef} className="relative">
-                    <button
-                        onClick={() => setShowUserMenu(!showUserMenu)}
-                        className="flex items-center gap-2 p-1 pr-3 rounded-full hover:bg-slate-100 dark:hover:bg-surface-a10 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-surface-a20"
-                    >
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-400 to-purple-600 flex items-center justify-center text-white font-bold text-xs shadow-sm">
-                            {(email?.[0] || 'U').toUpperCase()}
-                        </div>
-                        <span className="text-sm font-medium text-slate-700 dark:text-slate-200 hidden md:block max-w-[100px] truncate">
-                            {email?.split('@')[0]}
-                        </span>
-                    </button>
-
-                    {showUserMenu && (
-                        <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-surface-a0 rounded-xl shadow-xl border border-slate-100 dark:border-surface-a10 py-1 z-50 animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
-                            <div className="px-4 py-3 border-b border-slate-100 dark:border-surface-a10 bg-slate-50/50 dark:bg-surface-a10/50">
-                                <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{email}</p>
-                                <p className="text-xs text-slate-500 dark:text-slate-400">Free Plan</p>
-                            </div>
-
-                            <div className="py-1">
-                                <button className="w-full text-left px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-surface-a10 flex items-center gap-2 transition-colors">
-                                    <User className="h-4 w-4" /> Profile
-                                </button>
-                                <button className="w-full text-left px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-surface-a10 flex items-center gap-2 transition-colors">
-                                    <Settings className="h-4 w-4" /> Settings
-                                </button>
-                            </div>
-
-                            <div className="border-t border-slate-100 dark:border-surface-a10 py-1">
-                                <button
-                                    onClick={handleLogout}
-                                    className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-2 transition-colors"
-                                >
-                                    <LogOut className="h-4 w-4" /> Sign out
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                {/* Invitations Badge */}
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-500/20 text-purple-600 dark:text-purple-400 transition-all hover:bg-purple-100 dark:hover:bg-purple-900/30">
+                    <div className="relative">
+                        <User className="h-5 w-5" />
+                        {invitationCount > 0 && (
+                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white ring-2 ring-white dark:ring-[#050505] animate-pulse">
+                                {invitationCount}
+                            </span>
+                        )}
+                    </div>
+                    <span className="text-xs font-bold uppercase tracking-wide hidden sm:inline">
+                        {invitationCount === 1 ? '1 Invite' : `${invitationCount} Invites`}
+                    </span>
+                    <div className="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold text-[10px] ml-1">
+                        {(email?.[0] || 'U').toUpperCase()}
+                    </div>
                 </div>
             </div>
         </div>
