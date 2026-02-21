@@ -78,20 +78,14 @@ export const GalleryHeader: React.FC<GalleryHeaderProps> = ({
 
                 {/* Invitations Badge */}
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-500/20 text-purple-600 dark:text-purple-400 transition-all hover:bg-purple-100 dark:hover:bg-purple-900/30">
-                    <div className="relative">
-                        <User className="h-5 w-5" />
-                        {invitationCount > 0 && (
-                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white ring-2 ring-white dark:ring-[#050505] animate-pulse">
-                                {invitationCount}
-                            </span>
-                        )}
-                    </div>
-                    <span className="text-xs font-bold uppercase tracking-wide hidden sm:inline">
-                        {invitationCount === 1 ? '1 Invite' : `${invitationCount} Invites`}
+                    <span className="text-[10px] font-bold uppercase tracking-widest ml-1">
+                        Invite
                     </span>
-                    <div className="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold text-[10px] ml-1">
-                        {(email?.[0] || 'U').toUpperCase()}
-                    </div>
+                    {invitationCount > 0 && (
+                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white shadow-sm ring-1 ring-white/20 animate-pulse">
+                            {invitationCount}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
