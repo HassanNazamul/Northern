@@ -154,6 +154,24 @@ export const inviteUserToTrip = async (tripId: string, invitedEmail: string): Pr
 };
 
 /**
+ * Remove a collaborator from a trip.
+ */
+export const removeCollaborator = async (tripId: string, collaboratorEmail: string): Promise<boolean> => {
+    try {
+        const response = await fetch(`${REAL_API_BASE}/trips/${tripId}/collaborators?email=${collaboratorEmail}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) throw new Error(`Failed to remove collaborator: ${response.statusText}`);
+
+        return true;
+    } catch (error) {
+        console.error('Error removing collaborator:', error);
+        return false;
+    }
+};
+
+/**
  * Fetch trip invitations for a user (GET).
  */
 export const getTripInvitations = async (email: string): Promise<any[]> => {

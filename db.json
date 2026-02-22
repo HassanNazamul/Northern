@@ -5,6 +5,7 @@
       "trip_title": "Mock Toronto Adventure",
       "total_days": 2,
       "currency": "CAD",
+      "ownerEmail": "owner@example.com",
       "itinerary": [
         {
           "id": "day_1",
@@ -305,100 +306,6 @@
       "trip_title": "Montreal Cultural Escape",
       "total_days": 3,
       "currency": "CAD",
-      "itinerary": [
-        {
-          "id": "day_mtl_1",
-          "tripId": "trp_montreal",
-          "dayNumber": 1,
-          "date": "2024-07-20",
-          "theme": "Old Montreal Charm",
-          "stats": {
-            "totalCost": 400,
-            "totalDistance": 4.5,
-            "activityCount": 2
-          },
-          "accommodation": {
-            "id": "htl_mtl_1",
-            "type": "hotel",
-            "hotelName": "Hotel William Gray",
-            "address": "421 Rue Saint-Vincent, Montreal",
-            "pricePerNight": 350,
-            "rating": 4.7,
-            "bookingStatus": "confirmed",
-            "imageGallery": [],
-            "amenities": [
-              "Spa",
-              "Rooftop Terrace"
-            ],
-            "description": "Stylish hotel in the heart of Old Montreal."
-          },
-          "activities": [
-            {
-              "id": "act_mtl_101",
-              "type": "activity",
-              "title": "Notre-Dame Basilica",
-              "description": "Stunning Gothic Revival church.",
-              "location": "110 Notre-Dame St W",
-              "timeSlot": {
-                "start": "10:00",
-                "end": "11:30"
-              },
-              "cost_estimate": 15,
-              "category": "Sightseeing",
-              "durationMinutes": 90,
-              "status": "planned"
-            }
-          ]
-        },
-        {
-          "id": "day_mtl_2",
-          "tripId": "trp_montreal",
-          "dayNumber": 2,
-          "date": "2024-07-21",
-          "theme": "Art & Food",
-          "activities": [
-            {
-              "id": "act_mtl_201",
-              "type": "food",
-              "title": "Schwartz's Deli",
-              "description": "Famous smoked meat sandwiches.",
-              "location": "3895 St Laurent Blvd",
-              "timeSlot": {
-                "start": "12:00",
-                "end": "13:30"
-              },
-              "cost_estimate": 25,
-              "category": "Food",
-              "durationMinutes": 90,
-              "status": "planned"
-            }
-          ]
-        },
-        {
-          "id": "day_mtl_3",
-          "tripId": "trp_montreal",
-          "dayNumber": 3,
-          "date": "2024-07-22",
-          "theme": "Mount Royal Views",
-          "activities": [
-            {
-              "id": "act_mtl_301",
-              "type": "activity",
-              "title": "Mount Royal Park",
-              "description": "Panoramic views of the city.",
-              "location": "Mount Royal",
-              "timeSlot": {
-                "start": "10:00",
-                "end": "13:00"
-              },
-              "cost_estimate": 0,
-              "category": "Nature",
-              "durationMinutes": 180,
-              "status": "planned"
-            }
-          ]
-        }
-      ],
       "sidebar_suggestions": []
     }
   ],

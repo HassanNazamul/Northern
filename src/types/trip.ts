@@ -40,6 +40,7 @@ export interface Trip {
     location?: string; // Optinal location for UI
     image_url?: string; // Optional image URL for UI
     last_edited?: string; // Friendly date like "2d ago"
+    ownerEmail?: string; // Email of the trip creator
     collaborators?: Collaborator[];
     externalSync?: {
         googleCalendar?: {

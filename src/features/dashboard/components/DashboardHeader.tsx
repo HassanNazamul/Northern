@@ -11,9 +11,14 @@ import {
     MoreVertical,
     Layers,
     LayoutGrid,
-    Trash2
+    Trash2,
+    X,
+    UserMinus
 } from 'lucide-react';
 import { CollaboratorGroup } from './CollaboratorGroup';
+import { Collaborator } from '../../../types/trip';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../state/store';
 
 interface DashboardHeaderProps {
     destination: string;
@@ -22,6 +27,9 @@ interface DashboardHeaderProps {
     onSidebarToggle: () => void;
     onSave?: () => void;
     onInvite?: (email: string) => Promise<boolean>;
+    onRemoveCollaborator?: (email: string) => Promise<boolean>;
+    collaborators?: Collaborator[];
+    ownerEmail?: string;
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -31,11 +39,18 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     onSidebarToggle,
     onSave,
     onInvite,
+    onRemoveCollaborator,
+    collaborators = [],
+    ownerEmail
 }) => {
     const [showMoreMenu, setShowMoreMenu] = useState(false);
     const [showInviteDropdown, setShowInviteDropdown] = useState(false);
     const [inviteEmail, setInviteEmail] = useState('');
     const [isInviting, setIsInviting] = useState(false);
+    const [removingEmail, setRemovingEmail] = useState<string | null>(null);
+
+    const currentUserEmail = useSelector((state: RootState) => state.user.email);
+    const isOwner = currentUserEmail?.toLowerCase() === ownerEmail?.toLowerCase() || !ownerEmail;
 
     const optionsRef = useRef<HTMLDivElement>(null);
     const inviteRef = useRef<HTMLDivElement>(null);
@@ -54,8 +69,31 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
         if (success) {
             setInviteEmail('');
-            setShowInviteDropdown(false);
+            // We don't necessarily close the dropdown anymore as they might want to manage collaborators
         }
+    };
+
+    const handleRemove = async (email: string) => {
+        if (!onRemoveCollaborator) return;
+        console.log(`[UI Action] Removing member: ${email}`);
+        setRemovingEmail(email);
+        await onRemoveCollaborator(email);
+        setRemovingEmail(null);
+    };
+
+    const handleRevoke = async (email: string) => {
+        console.log(`[UI Action] Revoking invitation for: ${email}`);
+        // Once API is ready, we will call onRevokeCollaborator(email)
+        console.log('Backend API for revocation is pending implementation.');
+
+        // For now, we can use handleRemove as a fallback if the backend supports it via the same DELETE endpoint
+        // or just let it console log as requested.
+        setRemovingEmail(email);
+        if (onRemoveCollaborator) {
+            await onRemoveCollaborator(email);
+        }
+        setRemovingEmail(null);
+        return true;
     };
 
     return (
@@ -95,7 +133,13 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
                 {/* Collaborators */}
                 <div className="flex items-center gap-2 pr-4 border-r border-gray-200/50 dark:border-surface-a20 hidden md:flex">
-                    <CollaboratorGroup />
+                    <CollaboratorGroup
+                        collaborators={collaborators}
+                        ownerEmail={ownerEmail}
+                        isOwner={isOwner}
+                        onRemove={handleRemove}
+                        onRevoke={handleRevoke}
+                    />
                 </div>
 
                 {/* Action Toolbar */}
@@ -113,7 +157,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                         {showInviteDropdown && (
                             <div className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-surface-a0 rounded-xl shadow-xl border border-slate-100 dark:border-surface-a10 p-4 z-50 animate-in fade-in zoom-in-95 duration-200">
                                 <h3 className="text-sm font-bold text-slate-800 dark:text-white mb-3">Invite Collaborators</h3>
-                                <form onSubmit={handleInviteSubmit} className="space-y-3">
+                                <form onSubmit={handleInviteSubmit} className="space-y-3 mb-4">
                                     <input
                                         type="email"
                                         placeholder="Enter email address"
@@ -137,6 +181,41 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                                         )}
                                     </button>
                                 </form>
+
+                                {collaborators.some(c => c.status === 'PENDING') && (
+                                    <div className="pt-3 border-t border-slate-100 dark:border-surface-a10">
+                                        <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Manage Pending Invitations</h4>
+                                        <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+                                            {collaborators.filter(c => c.status === 'PENDING').map((collab) => (
+                                                <div key={collab.email} className="flex items-center justify-between group">
+                                                    <div className="flex flex-col min-w-0">
+                                                        <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 truncate">{collab.email}</span>
+                                                        <span className="text-[10px] text-slate-400 font-medium">
+                                                            Pending Invite
+                                                        </span>
+                                                    </div>
+                                                    {isOwner && (
+                                                        <button
+                                                            onClick={() => handleRevoke(collab.email)}
+                                                            disabled={removingEmail === collab.email}
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold text-white bg-red-500 hover:bg-red-600 rounded-lg transition-all shadow-sm shadow-red-500/20 disabled:opacity-50"
+                                                            title="Revoke Invitation"
+                                                        >
+                                                            {removingEmail === collab.email ? (
+                                                                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                                            ) : (
+                                                                <>
+                                                                    <X className="w-3.5 h-3.5" />
+                                                                    Revoke
+                                                                </>
+                                                            )}
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>

@@ -8,7 +8,7 @@ import { ChatBot } from '@features/chat';
 import { getAccommodationSuggestion } from '@services';
 import { useDragAndDrop, useZoomPan, useDiscovery } from './hooks';
 import { useAppSelector, useAppDispatch, selectItinerary, selectTripState, selectSidebarOpen, selectSelectedActivity, selectSelectedAccommodation } from '@state';
-import { setSidebarOpen, selectActivity, selectAccommodation, removeAccommodation, removeActivity, addActivity, setAccommodation as setAccommodationAction, persistItinerary, deleteDay, selectDay, updateDay } from '@state/slices/dashboardSlice';
+import { setSidebarOpen, selectActivity, selectAccommodation, removeAccommodation, removeActivity, addActivity, setAccommodation as setAccommodationAction, persistItinerary, deleteDay, selectDay, updateDay, fetchItinerary } from '@state/slices/dashboardSlice';
 import {
   DiscoverySidebar,
   DashboardCanvas,
@@ -24,7 +24,7 @@ import {
   DeleteConfirmationModal,
   TrashBin
 } from './components';
-import { deleteTrip, updateTrip, inviteUserToTrip } from '@services/api';
+import { deleteTrip, updateTrip, inviteUserToTrip, removeCollaborator } from '@services/api';
 import { selectUserEmail } from '@state/selectors';
 
 interface DashboardProps {
@@ -161,7 +161,22 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
 
   const handleInviteUser = async (invitedEmail: string) => {
     if (!itinerary) return false;
-    return await inviteUserToTrip(itinerary.id, invitedEmail);
+    const success = await inviteUserToTrip(itinerary.id, invitedEmail);
+    if (success) {
+      // Re-fetch trip data to show new pending invite
+      dispatch(fetchItinerary(itinerary.id));
+    }
+    return success;
+  };
+
+  const handleRemoveCollaborator = async (collabEmail: string) => {
+    if (!itinerary) return false;
+    const success = await removeCollaborator(itinerary.id, collabEmail);
+    if (success) {
+      // Re-fetch trip data to update the UI
+      dispatch(fetchItinerary(itinerary.id));
+    }
+    return success;
   };
 
   return (
@@ -243,6 +258,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onReset }) => {
             onSidebarToggle={() => dispatch(setSidebarOpen(!sidebarOpen))}
             onSave={handleSave}
             onInvite={handleInviteUser}
+            onRemoveCollaborator={handleRemoveCollaborator}
+            collaborators={itinerary.collaborators}
+            ownerEmail={itinerary.ownerEmail}
           />
 
           {/* Canvas Area - Flexible & Contained */}
